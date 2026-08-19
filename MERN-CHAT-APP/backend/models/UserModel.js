@@ -1,6 +1,4 @@
-// Import bcrypt to hash passwords before saving to the database
 import bcrypt from "bcryptjs";
-// Import mongoose to define schemas and models for MongoDB
 import mongoose from "mongoose";
 
 // Define the schema for a User collection
@@ -8,26 +6,26 @@ const userSchema = new mongoose.Schema(
   {
     // `userName` field: stores the user's display name
     userName: {
-      type: String, // data type is String
-      required: true, // this field is required
-      trim: true, // trim surrounding whitespace before saving
+      type: String,
+      required: true,
+      trim: true,
     },
     // `email` field: stores the user's email address
     email: {
-      type: String, // data type is String
-      required: true, // email is required
-      lowercase: true, // convert email to lowercase before saving
-      trim: true, // trim surrounding whitespace
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
     },
     // `password` field: stores the hashed password
     password: {
-      type: String, // data type is String (we store the hash)
-      required: true, // password is required when creating a user
+      type: String,
+      required: true,
     },
     // `isAdmin` field: boolean flag for admin privileges
     isAdmin: {
-      type: Boolean, // data type is Boolean
-      default: false, // default to non-admin users
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -43,7 +41,7 @@ userSchema.pre("save", async function (next) {
     // If the password wasn't changed, skip hashing
     return next();
   }
-  // Hash the password with a salt rounds value of 10
+  // Hash the plain-text password with bcrypt using 10 salt rounds (cost ≈ 2^10) and replace `this.password` with the resulting hash
   this.password = await bcrypt.hash(this.password, 10);
   // Continue with save
   return next();
