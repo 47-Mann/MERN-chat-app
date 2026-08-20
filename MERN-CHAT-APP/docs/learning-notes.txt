@@ -1,0 +1,93 @@
+LEARNING NOTES
+===============
+
+TOPIC: Mongoose .pre() middleware
+---------------------------------
+
+What it is: ---
+userSchema.pre() is a Mongoose middleware hook. It runs before a MongoDB operation, such as save.
+
+Why it is useful: ---
+It lets us modify or validate data before it is saved to the database.
+
+Example from the project:---
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+  return next();
+});
+
+What this does:---
+- checks whether the password field changed
+- if it did not change, it skips hashing
+- if it did change, it hashes the plain text password before saving
+- then it continues with the save operation
+
+Why this matters for security:
+Passwords should never be stored in plain text in the database. Hashing makes them safer even if the database is exposed.
+
+Common rule:
+next() must be called to continue the process. If you forget it, the save may hang or never finish.
+
+
+TOPIC: mongoose.Schema.Types.ObjectId
+------------------------------------
+
+What it is:
+mongoose.Schema.Types.ObjectId is the Mongoose data type used to store MongoDB _id values.
+
+Why it is used:
+It is used when one document should reference another document, such as:
+- a group member referencing a User
+- a post author referencing a User
+- an order referencing a Product
+
+Example from GroupModel.js:
+members: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+],
+
+admin: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+}
+
+What it means:
+- ObjectId stores the MongoDB unique ID of the related user
+- ref: "User" tells Mongoose which model this ID belongs to
+- this enables population later, for example:
+
+const group = await Group.findById(id).populate("members");
+
+Why this is important:
+Instead of storing the full user object in each group, you store only the user ID. This keeps data smaller and cleaner.
+
+
+TOPIC: Relationship between ref and ObjectId
+--------------------------------------------
+
+When you do:
+type: mongoose.Schema.Types.ObjectId,
+ref: "User"
+
+it means:
+- the field stores an ID like 64d3c...
+- that ID points to a document in the User collection
+- ref tells Mongoose which collection/model to use when populating
+
+Example:
+admin: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+}
+
+This means admin is a reference to a user document.
+
+
+
