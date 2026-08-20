@@ -36,10 +36,10 @@ next() must be called to continue the process. If you forget it, the save may ha
 TOPIC: mongoose.Schema.Types.ObjectId
 ------------------------------------
 
-What it is:
+What it is:---
 mongoose.Schema.Types.ObjectId is the Mongoose data type used to store MongoDB _id values.
 
-Why it is used:
+Why it is used:---
 It is used when one document should reference another document, such as:
 - a group member referencing a User
 - a post author referencing a User
@@ -58,25 +58,25 @@ admin: {
   ref: "User",
 }
 
-What it means:
+What it means:---
 - ObjectId stores the MongoDB unique ID of the related user
 - ref: "User" tells Mongoose which model this ID belongs to
 - this enables population later, for example:
 
 const group = await Group.findById(id).populate("members");
 
-Why this is important:
+Why this is important:---
 Instead of storing the full user object in each group, you store only the user ID. This keeps data smaller and cleaner.
 
 
 TOPIC: Relationship between ref and ObjectId
 --------------------------------------------
 
-When you do:
+When you do:---
 type: mongoose.Schema.Types.ObjectId,
 ref: "User"
 
-it means:
+it means:---
 - the field stores an ID like 64d3c...
 - that ID points to a document in the User collection
 - ref tells Mongoose which collection/model to use when populating
