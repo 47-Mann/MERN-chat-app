@@ -48,6 +48,7 @@ userRouter.post("/login", async (req, res) => {
           username: user.userName,
           email: user.email,
           isAdmin: user.isAdmin,
+          token: generateToken(user._id),
         },
       });
     } else {
@@ -57,4 +58,10 @@ userRouter.post("/login", async (req, res) => {
     res.status(400).json({ message: e.message });
   }
 });
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
 export default userRouter;
