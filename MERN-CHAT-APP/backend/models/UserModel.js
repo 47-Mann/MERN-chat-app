@@ -46,6 +46,9 @@ userSchema.pre("save", async function (next) {
   // Continue with save
   return next();
 });
+userSchema.methods.matchPassword = async function (enteredPass) {
+  return await bcrypt.compare(enteredPass, this.password);
+};
 
 // Create the Mongoose model named 'User' based on the schema
 const User = mongoose.model("User", userSchema);

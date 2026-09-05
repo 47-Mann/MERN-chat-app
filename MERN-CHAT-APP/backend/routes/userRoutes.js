@@ -36,4 +36,25 @@ userRouter.post("/register", async (req, res) => {
   }
 });
 
+userRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (user && (await user.matchPass(password))) {
+      res.json({
+        user: {
+          _id: user._id,
+          username: user.userName,
+          email: user.email,
+          isAdmin: user.isAdmin,
+        },
+      });
+    } else {
+      res.status(401).json({ message: "Invalid email or password" });
+    }
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
 export default userRouter;
