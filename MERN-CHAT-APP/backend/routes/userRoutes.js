@@ -1,11 +1,27 @@
 import express from "express";
 import User from "../models/UserModel.js";
+import jwt from "jsonwebtoken";
 
 const userRouter = express.Router();
 
+// User routes
+//
+// This file exposes authentication-related routes for the application:
+// - POST /register : create a new user (checks for existing email)
+// - POST /login    : authenticate user and return a JWT token
+//
+// Notes:
+// - `User` is a Mongoose model defined at ../models/UserModel.js. The model
+//   is expected to implement a method `matchPass(password)` (or similar)
+//   to verify a hashed password — the route calls `user.matchPass(password)`.
+// - `generateToken(id)` signs a JWT using `process.env.JWT_SECRET`. Ensure
+//   the environment variable is set in your runtime (e.g., .env or hosting config).
+// - Error handling: the routes return appropriate HTTP status codes and JSON
+//   messages for common failure cases.
+
 // POST /register
-// This route creates a new user account.
-// It checks if the email already exists, then saves the user to MongoDB.
+// Create a new user account. Checks whether the email already exists, and
+// if not, creates the user document in MongoDB and returns basic user info.
 userRouter.post("/register", async (req, res) => {
   try {
     // Read the incoming data from the request body.
@@ -19,7 +35,9 @@ userRouter.post("/register", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create the new user document in MongoDB.
+    // Create the new user document in MongoDB. The model should handle
+    // password hashing in a pre-save hook or similar — we pass the raw
+    // password here and rely on the model to store a hashed password.
     const user = await User.create({ userName, email, password });
 
     // If user creation succeeds, return the new user details.
@@ -30,6 +48,10 @@ userRouter.post("/register", async (req, res) => {
         email: user.email,
       });
     }
+
+    // If creation did not throw but also did not return a user, respond
+    // with a generic 400 error to avoid leaving the request hanging.
+    return res.status(400).json({ message: "Invalid user data" });
   } catch (error) {
     // Catch any database or validation errors and return them to the client.
     return res.status(400).json({ message: error.message });
