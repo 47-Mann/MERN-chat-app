@@ -90,4 +90,31 @@ admin: {
 This means admin is a reference to a user document.
 
 
+TOPIC: `userSchema.methods.matchPassword`
+----------------------------------------
+
+What it is:---
+`userSchema.methods.matchPassword` is a custom instance method added to the Mongoose schema. It is not a built-in Mongoose API.
+
+Why it is useful:---
+- Attaches password-checking logic directly to user documents so you can call `await user.matchPassword(password)` on any fetched `User` document.
+
+How it works:---
+- The method is defined as a regular `function` (not an arrow) so that `this` refers to the specific Mongoose document.
+- Typical implementation:
+  userSchema.methods.matchPassword = async function (enteredPass) {
+    return await bcrypt.compare(enteredPass, this.password);
+  };
+- It compares the plaintext `enteredPass` with the stored hashed password `this.password` using `bcrypt.compare` and returns `true` or `false`.
+
+Important details / gotchas:---
+- Use a regular `function` or function expression — arrow functions do not get `this` bound to the document and will break `this.password`.
+- If your schema marks `password` with `select: false`, include it when fetching the user: `User.findOne({ email }).select('+password')` before calling the method.
+- The schema's `pre('save')` hook already hashes `this.password`, so `matchPassword` should always compare against a hashed value.
+
+Usage example:---
+- const user = await User.findOne({ email }).select('+password');
+- const ok = await user.matchPassword(plainTextPassword); // true/false
+
+
 
