@@ -1,0 +1,36 @@
+Server Explanation
+
+File: server.js
+
+Purpose:
+This is the main application entry point. It creates the Express application, connects to MongoDB, configures Socket.IO, mounts API routes, and starts the HTTP server.
+
+1. Application setup
+Express handles HTTP requests. CORS allows the configured frontend origins to call the API. express.json() parses JSON request bodies.
+
+2. HTTP and Socket.IO servers
+The Express app is wrapped in an HTTP server. Socket.IO uses the same server so REST endpoints and real-time chat events can share one port.
+
+3. Environment variables
+dotenv loads values from .env into process.env.
+The server looks for MONGO_URI first and then MONGODB_URI. PORT controls the listening port and defaults to 5001.
+
+4. Database connection
+mongoose.connect(mongoUri) connects the application to MongoDB.
+A successful connection logs "Connected to DB". A failed connection logs the error message.
+
+5. Socket initialization
+socketIO(io) gives the socket module the Socket.IO server instance. The socket module can register connection and message events there.
+
+6. API routes
+- /api/users uses userRoutes.js for registration and login.
+- /api/groups uses groupRoutes.js for group operations.
+
+7. Starting the server
+server.listen() starts accepting requests on the configured port.
+The frontend can then call the API and connect to Socket.IO.
+
+Configuration notes:
+- Add MONGO_URI or MONGODB_URI to .env.
+- Add JWT_SECRET for JWT creation and verification.
+- Add the frontend origin to the CORS configuration when deploying.

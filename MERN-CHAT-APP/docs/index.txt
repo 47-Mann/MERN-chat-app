@@ -1,0 +1,18 @@
+Index Entry Point Explanation
+
+File: index.js
+
+Current status:
+This file only imports Express and is not used to start the application.
+The package.json main field points to server.js, and server.js is the file that creates and starts the server.
+
+Why this file may exist:
+It may be an earlier entry point or a placeholder for a future application bootstrap file.
+
+Current startup command:
+npm start
+
+This runs:
+node server.js
+
+If index.js is kept, it should eventually either start the application or be removed to avoid having two confusing entry points.

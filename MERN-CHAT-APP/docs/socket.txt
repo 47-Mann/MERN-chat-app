@@ -1,0 +1,24 @@
+Socket.IO Module Explanation
+
+File: backend/socket.js
+
+Purpose:
+This module is the planned home for real-time chat behavior using Socket.IO.
+server.js creates the Socket.IO server and passes it into this module through socketIO(io).
+
+Current implementation:
+const socketIO = (io) => {};
+
+The function currently accepts the Socket.IO instance but does not register any event handlers yet. It is a placeholder for future features such as:
+- detecting when a user connects or disconnects
+- joining a group room
+- broadcasting a new message to group members
+- notifying clients when a message is saved
+
+Typical future structure:
+io.on("connection", (socket) => {
+  // Register events for this connected client.
+});
+
+Export:
+The function is exported as the default export and called once during server startup.

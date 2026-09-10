@@ -18,6 +18,9 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+// Socket.IO shares the HTTP server and allows the frontend to connect from the
+// local development origins listed below.
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "https://localhost:5173"],
@@ -34,6 +37,7 @@ app.use(
 );
 app.use(express.json());
 
+// Support either environment variable name while warning when neither exists.
 const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
 
 if (!mongoUri) {
@@ -43,13 +47,14 @@ if (!mongoUri) {
 }
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(mongoUri)
   .then(() => console.log("Connected to DB"))
   .catch((e) => {
     console.log("MongoDB connection failed", e.message || e);
   });
 
 socketIO(io);
+// Mount feature routers under their API prefixes.
 app.use("/api/users", userRouter);
 app.use("/api/groups", groupRouter);
 const PORT = process.env.PORT || 5001;

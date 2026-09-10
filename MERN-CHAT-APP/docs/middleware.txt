@@ -1,0 +1,17 @@
+Shared Middleware Explanation
+
+File: backend/middleware/middleware.js
+
+Current status:
+This file is currently empty except for a comment. It is reserved for middleware that may be shared by multiple routes.
+
+What middleware does:
+Express middleware runs between receiving a request and sending a response. It can inspect or modify req and res, perform validation, log requests, or call next() to continue.
+
+Possible future uses:
+- request logging
+- common input validation
+- rate limiting
+- attaching shared request data
+
+Authentication is kept in authMiddleware.js because protect has a specific JWT authentication responsibility.

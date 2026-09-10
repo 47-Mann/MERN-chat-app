@@ -1,0 +1,48 @@
+Authentication Middleware Explanation
+
+File: backend/middleware/authMiddleware.js
+
+Purpose:
+This middleware protects routes that should only be available to logged-in users.
+It expects the client to send a JWT in the Authorization header.
+
+Expected request header:
+Authorization: Bearer <jwt-token>
+
+1. Checking the Authorization header
+The middleware first checks whether req.headers.authorization exists and starts with "Bearer".
+"Bearer" is the standard authentication scheme used when sending an access token.
+
+2. Extracting the token
+The header is split at the space:
+
+Authorization: Bearer abc123
+
+The second value, abc123, is the JWT. The word "Bearer" is only the scheme name and is not part of the token.
+
+3. Verifying the JWT
+jwt.verify() checks that:
+- the token was signed with process.env.JWT_SECRET
+- the token has not been changed
+- the token has not expired
+
+The decoded payload contains the user id created by the login route.
+
+4. Loading the user
+The middleware finds the user by the decoded id and removes the password field with select("-password").
+The user is attached to req.user so later route handlers can use the authenticated user.
+
+5. Continuing or rejecting the request
+- A valid token calls next() and allows the route to continue.
+- A missing token returns status 401 with "Not authorized, no token".
+- An invalid or expired token returns status 401 with "Not authorized, token failed".
+
+Usage example:
+router.post("/", protect, async (req, res) => {
+  // req.user is available here after protect succeeds.
+});
+
+Security notes:
+- Keep JWT_SECRET private and store it in the environment file.
+- Use HTTPS in production so tokens are encrypted while in transit.
+- Do not place passwords or other sensitive data in the JWT payload.
