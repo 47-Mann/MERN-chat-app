@@ -35,16 +35,14 @@ const userSchema = new mongoose.Schema(
 );
 
 // Pre-save middleware: hash the password before saving the document
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   // `this` refers to the document being saved
   if (!this.isModified("password")) {
     // If the password wasn't changed, skip hashing
-    return next();
+    return;
   }
   // Hash the plain-text password with bcrypt using 10 salt rounds (cost ≈ 2^10) and replace `this.password` with the resulting hash
   this.password = await bcrypt.hash(this.password, 10);
-  // Continue with save
-  return next();
 });
 userSchema.methods.matchPassword = async function (enteredPass) {
   return await bcrypt.compare(enteredPass, this.password);
