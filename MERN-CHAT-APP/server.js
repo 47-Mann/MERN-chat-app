@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 
 // Route handlers
 import userRouter from "./backend/routes/userRoutes.js";
+import groupRouter from "./backend/routes/groupRoutes.js";
 
 // Sockets
 import socketIO from "./backend/socket.js";
@@ -42,7 +43,7 @@ if (!mongoUri) {
 }
 
 mongoose
-  .connect(mongoUri)
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to DB"))
   .catch((e) => {
     console.log("MongoDB connection failed", e.message || e);
@@ -50,7 +51,7 @@ mongoose
 
 socketIO(io);
 app.use("/api/users", userRouter);
-
+app.use("/api/groups", groupRouter);
 const PORT = process.env.PORT || 5001;
 
 server.listen(PORT, () => {
