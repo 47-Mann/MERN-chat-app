@@ -1,5 +1,13 @@
 userModel.txt
 userRoutes.txt
+authMiddleware.txt
+chatModel.txt
+groupModel.txt
+groupRoutes.txt
+index.txt
+middleware.txt
+server.txt
+socket.txt
 node_modules/
 .env
 .env.local
