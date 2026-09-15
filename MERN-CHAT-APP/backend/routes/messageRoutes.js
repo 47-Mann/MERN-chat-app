@@ -28,4 +28,18 @@ messageRouter.post("/", protect, async (req, res) => {
   }
 });
 
+// GET /api/messages/:groupId returns the newest messages for a group first.
+messageRouter.get("/:groupId", protect, async (req, res) => {
+  try {
+    // Filter by the group reference so messages from other groups are excluded.
+    const messages = await Message.find({ group: req.params.groupId })
+      .populate("sender", "userName email")
+      .sort({ createdAt: -1 });
+
+    return res.json(messages);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+});
+
 export default messageRouter;
