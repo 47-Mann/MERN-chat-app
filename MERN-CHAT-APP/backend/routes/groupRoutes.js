@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
 import Group from "../models/GroupModel.js";
-import protect from "../middleware/authMiddleware.js";
+import { protect, requireAdmin } from "../middleware/authMiddleware.js";
 
 // POST /api/groups creates a group for the authenticated user.
-router.post("/", protect, async (req, res) => {
+router.post("/", protect, requireAdmin, async (req, res) => {
   try {
     const { name, description } = req.body;
 
