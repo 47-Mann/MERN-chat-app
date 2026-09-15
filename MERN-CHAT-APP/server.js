@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 // Route handlers
 import userRouter from "./backend/routes/userRoutes.js";
 import groupRouter from "./backend/routes/groupRoutes.js";
+import messageRouter from "./backend/routes/messageRoutes.js";
 
 // Sockets
 import socketIO from "./backend/socket.js";
@@ -57,6 +58,7 @@ socketIO(io);
 // Mount feature routers under their API prefixes.
 app.use("/api/users", userRouter);
 app.use("/api/groups", groupRouter);
+app.use("/api/messages", messageRouter);
 const PORT = process.env.PORT || 5001;
 
 server.listen(PORT, () => {
