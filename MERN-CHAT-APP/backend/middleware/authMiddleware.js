@@ -16,14 +16,14 @@ const protect = async (req, res, next) => {
 
       // Attach the authenticated user so protected routes can use req.user.
       req.user = await User.findById(decoded.id).select("-password");
-      next();
+      return next();
     } catch (error) {
       console.error(error);
-      res.status(401).json({ message: "Not authorized, token failed" });
+      return res.status(401).json({ message: "Not authorized, token failed" });
     }
   }
   if (!token) {
-    res.status(401).json({ message: "Not authorized, no token" });
+    return res.status(401).json({ message: "Not authorized, no token" });
   }
 };
 
@@ -38,4 +38,6 @@ const requireAdmin = async (req, res, next) => {
     res.status(401).json({ message: error });
   }
 };
+
+export { protect, requireAdmin };
 export default { protect, requireAdmin };
