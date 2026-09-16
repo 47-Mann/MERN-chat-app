@@ -1,33 +1,18 @@
-# Multiple User Chat Application
+# MERN Chat Application
 
-A professional MERN stack chat application that enables multiple users to create accounts, sign in, and join shared chat groups for real-time communication.
+A real-time group chat application built with MongoDB, Express, React, Node.js, and Socket.IO. Users can create accounts, sign in, create or join groups, and exchange messages in real time.
 
-## Overview
+## Features
 
-This project is designed to support collaborative conversations in a group-based environment. Users can register an account, authenticate securely, and access chat rooms where they can communicate with other members in real time.
-
-## Key Features
-
-- User registration and account creation
-- Secure login using JWT-based authentication
-- Group-based chat experience for multiple users
-- Real-time messaging with Socket.IO
-- MongoDB-powered persistence for users and chat data
-- Express.js backend for RESTful API endpoints
-- React-based frontend support for a modern user experience
-
-## Tech Stack
-
-- MongoDB
-- Express.js
-- React
-- Node.js
-- Socket.IO
-- JWT Authentication
+- User registration and JWT authentication
+- Protected user, group, and message routes
+- Group chat with Socket.IO real-time updates
+- MongoDB persistence for users, groups, and messages
+- React frontend with Chakra UI and React Router
 
 ## Project Structure
 
-```bash
+```text
 MERN-CHAT-APP/
 ├── backend/
 │   ├── middleware/
@@ -35,64 +20,101 @@ MERN-CHAT-APP/
 │   ├── routes/
 │   └── socket.js
 ├── docs/
-├── .env
-├── index.js
-├── package.json
+├── frontend/
+│   ├── public/
+│   └── src/
 ├── server.js
-├── README.md
-└── ...
+├── package.json
+└── README.md
 ```
 
 ## Prerequisites
 
-Before running the project, ensure you have the following installed:
+- Node.js and npm
+- A MongoDB database, local or hosted through MongoDB Atlas
 
-- Node.js
-- npm
-- MongoDB database access
-- A valid environment configuration in the `.env` file
+## Configuration
 
-## Environment Configuration
-
-Create a `.env` file in the project root with the following values:
+Create a `.env` file in the project root. Do not commit this file or share its values.
 
 ```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+PORT=5001
+MONGO_URI=mongodb_connection_string
+JWT_SECRET=replace_with_a_long_random_secret
 ```
+
+The backend also accepts `MONGODB_URI` instead of `MONGO_URI`. If `PORT` is omitted, the backend uses port `5001`.
 
 ## Installation
 
-1. Clone the repository.
-2. Navigate to the project directory.
-3. Install dependencies:
+Install backend dependencies from the project root:
 
 ```bash
 npm install
 ```
 
-## Run the Application
+Install frontend dependencies:
 
-Start the backend server:
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+## Running Locally
+
+Start the backend in one terminal from the project root:
 
 ```bash
 npm start
 ```
 
-The application will run on the configured port, typically `5000` unless otherwise specified.
+Start the frontend in a second terminal:
 
-## Usage
+```bash
+cd frontend
+npm run dev
+```
 
-1. Register a new user account.
-2. Log in with the registered credentials.
-3. Join an existing group or create a group conversation.
-4. Start interacting with other users in real time.
+Vite usually serves the frontend at `http://localhost:5173`. The backend usually runs at `http://localhost:5001`.
 
-## Notes
+The frontend currently uses the deployed backend URL in `frontend/utils.js`. To run the complete application against your local backend, change that value to:
 
-This application is intended for group-based communication and demonstrates a practical full-stack implementation of a real-time chat system using the MERN stack.
+```js
+const apiURL = "http://localhost:5001";
+```
+
+The backend CORS configuration allows the Vite development origin at port `5173`.
+
+## Available Commands
+
+From the project root:
+
+```bash
+npm start       # Start the backend
+```
+
+From the `frontend/` directory:
+
+```bash
+npm run dev     # Start the Vite development server
+npm run build   # Create a production build
+npm run preview # Preview the production build locally
+npm run lint    # Run ESLint
+```
+
+## API Routes
+
+The backend exposes these route groups:
+
+```text
+/api/users
+/api/groups
+/api/messages
+```
+
+Protected routes require a JWT returned by the user authentication endpoints.
 
 ## License
 
-This project is for educational and development purposes.
+See the `LICENSE` file for licensing terms.
