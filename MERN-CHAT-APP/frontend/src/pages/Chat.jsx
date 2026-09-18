@@ -12,15 +12,15 @@ const Chat = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
+    // Pass the current session to Socket.IO when the chat screen mounts.
     const userInfo = JSON.parse(localStorage.getItem("userInfo") || {});
     const newSocket = io(ENDPOINT, {
       auth: { user: userInfo },
     });
     setSocket(newSocket);
     return () => {
-      if (newSocket) {
-        newSocket.disconnect();
-      }
+      // Close the connection when leaving chat to prevent stale listeners.
+      newSocket.disconnect();
     };
   }, []);
   return (

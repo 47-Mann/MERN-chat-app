@@ -19,9 +19,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  //Navigate
+  // Redirect to chat after the backend returns a valid authenticated user.
   const navigate = useNavigate();
-  //main logic for login
+
+  // Authenticate the user, persist the session, and open the protected chat route.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -32,7 +33,7 @@ const Login = () => {
       });
       console.log(data.user);
 
-      //save the token into localstorage
+      // Keep the token and user details available to protected routes and API calls.
       localStorage.setItem("userInfo", JSON.stringify(data.user));
       navigate("/chat");
     } catch (error) {

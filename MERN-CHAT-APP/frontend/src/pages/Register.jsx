@@ -20,9 +20,10 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  //Navigate
+  // Send new users to login after their account has been created.
   const navigate = useNavigate();
-  //main logic for login
+
+  // Create the account through the API; authentication happens during login.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

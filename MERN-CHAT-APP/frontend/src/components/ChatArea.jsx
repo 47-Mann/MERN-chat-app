@@ -31,11 +31,12 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
   const typingTimeoutRef = useRef(null);
   const toast = useToast();
 
+  // Read the current session once so message ownership and API calls use the same user.
   const currentUser = JSON.parse(localStorage.getItem("userInfo") || {});
 
   useEffect(() => {
     if (selectedGroup && socket) {
-      //fetch messages
+      // Load history and subscribe to live events whenever the active group changes.
       fetchMessages();
       socket.emit("join room", selectedGroup?._id);
       socket.on("message receive", (newMessage) => {
@@ -52,7 +53,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
 
       socket.on("user left", (userId) => {
         setConnectedUsers((prev) =>
-          prev.filter((user) => user?._id !== userId)
+          prev.filter((user) => user?._id !== userId),
         );
       });
 
@@ -79,7 +80,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
           return newSet;
         });
       });
-      //clean up
+      // Leave the room and remove listeners before switching groups or unmounting.
       return () => {
         socket.emit("leave room", selectedGroup?._id);
         socket.off("message received");
@@ -101,7 +102,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         `${apiURL}/api/messages/${selectedGroup?._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       setMessages(data);
     } catch (error) {
@@ -109,7 +110,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
     }
   };
 
-  //send message
+  // Persist the message first, then broadcast the saved record to other room members.
   const sendMessage = async () => {
     if (!newMessage.trim()) {
       return;
@@ -124,7 +125,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       socket.emit("new message", {
         ...data,
@@ -142,7 +143,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       });
     }
   };
-  //handleTyping
+  // Notify the room while the user types and stop after two seconds of inactivity.
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
     if (!isTyping && selectedGroup) {
@@ -152,11 +153,11 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         username: currentUser.username,
       });
     }
-    //clear existing timeout
+    // Reset the timer on every keystroke so the indicator does not disappear early.
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    //set new timeout
+    // Emit the stop event once the user has stopped typing.
     typingTimeoutRef.current = setTimeout(() => {
       if (selectedGroup) {
         socket.emit("stop typing", {
