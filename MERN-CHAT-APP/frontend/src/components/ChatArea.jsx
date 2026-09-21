@@ -20,9 +20,12 @@ import apiURL from "../../utils";
 import PropTypes from "prop-types";
 
 const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
+  // Store server history separately from the draft currently in the composer.
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  // Presence comes from Socket.IO and is scoped to the selected room.
   const [connectedUsers, setConnectedUsers] = useState([]);
+  // Typing users are kept unique so repeated keystrokes do not duplicate indicators.
   const [isTyping, setIsTyping] = useState(false);
   const [typingUsers, setTypingUsers] = useState(new Set());
   const messagesEndRef = useRef(null);
@@ -40,6 +43,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
   const currentUserName = getUserName(currentUser);
 
   useEffect(() => {
+    // Keep the latest message or typing indicator visible as the conversation grows.
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typingUsers]);
 
@@ -71,6 +75,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       fetchMessages(selectedGroup._id);
       socket.emit("joinRoom", selectedGroup?._id);
       socket.on("messageReceived", (newMessage) => {
+        // Socket.IO delivers messages from other room members in real time.
         setMessages((prev) => [...prev, newMessage]);
       });
 
@@ -272,7 +277,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         flex="1"
         display="flex"
         flexDirection="column"
-        bg="gray.50"
+        bg="#0b0b0f"
         maxW={{ base: "100%", lg: `calc(100% - 260px)` }}
       >
         {/* Chat Header */}
@@ -281,9 +286,9 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
             <Flex
               px={6}
               py={4}
-              bg="white"
+              bg="rgba(28, 28, 30, 0.94)"
               borderBottom="1px solid"
-              borderColor="gray.200"
+              borderColor="#38383a"
               align="center"
               boxShadow="sm"
             >
@@ -302,13 +307,13 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                 mr={3}
               />
               <Box flex="1">
-                <Text fontSize="lg" fontWeight="bold" color="gray.800">
+                <Text fontSize="lg" fontWeight="bold" color="white">
                   {selectedGroup.name}
                 </Text>
-                <Text fontSize="sm" color="gray.500">
+                <Text fontSize="sm" color="gray.400">
                   {selectedGroup.description || "No description"}
                 </Text>
-                <Text fontSize="xs" color="gray.400">
+                <Text fontSize="xs" color="gray.500">
                   {selectedGroup.members?.length || 0} member
                   {selectedGroup.members?.length === 1 ? "" : "s"}
                 </Text>
@@ -345,7 +350,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
               }}
             >
               {messages.length === 0 && typingUsers.size === 0 && (
-                <Text color="gray.500" textAlign="center" py={8}>
+                <Text color="gray.400" textAlign="center" py={8}>
                   No messages yet. Start the conversation.
                 </Text>
               )}
@@ -354,8 +359,8 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                   key={message._id}
                   alignSelf={
                     message.sender._id === currentUser?._id
-                      ? "flex-start"
-                      : "flex-end"
+                      ? "flex-end"
+                      : "flex-start"
                   }
                   maxW="70%"
                 >
@@ -376,13 +381,13 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                             size="xs"
                             name={getUserName(message.sender)}
                           />
-                          <Text fontSize="xs" color="gray.500">
+                          <Text fontSize="xs" color="gray.400">
                             You • {formatTime(message.createdAt)}
                           </Text>
                         </>
                       ) : (
                         <>
-                          <Text fontSize="xs" color="gray.500">
+                          <Text fontSize="xs" color="gray.400">
                             {getUserName(message.sender)} •{" "}
                             {formatTime(message.createdAt)}
                           </Text>
@@ -397,17 +402,27 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                     <Box
                       bg={
                         message?.sender._id === currentUser?._id
-                          ? "blue.500"
-                          : "white"
+                          ? "#007aff"
+                          : "#2c2c30"
                       }
                       color={
                         message?.sender._id === currentUser?._id
                           ? "white"
-                          : "gray.800"
+                          : "white"
                       }
                       p={3}
-                      borderRadius="lg"
-                      boxShadow="sm"
+                      borderRadius="18px"
+                      borderBottomRightRadius={
+                        message?.sender._id === currentUser?._id
+                          ? "5px"
+                          : "18px"
+                      }
+                      borderBottomLeftRadius={
+                        message?.sender._id === currentUser?._id
+                          ? "18px"
+                          : "5px"
+                      }
+                      boxShadow="0 1px 2px rgba(0, 0, 0, 0.08)"
                     >
                       <Text>{message.content}</Text>
                     </Box>
@@ -421,9 +436,9 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
             {/* Message Input */}
             <Box
               p={4}
-              bg="white"
+              bg="rgba(28, 28, 30, 0.96)"
               borderTop="1px solid"
-              borderColor="gray.200"
+              borderColor="#38383a"
               position="relative"
               zIndex="1"
             >
@@ -433,11 +448,14 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                   onChange={handleTyping}
                   placeholder="Type your message..."
                   pr="4.5rem"
-                  bg="gray.50"
-                  border="none"
+                  bg="#2c2c30"
+                  border="1px solid"
+                  borderColor="#d1d1d6"
+                  borderRadius="full"
                   _focus={{
                     boxShadow: "none",
-                    bg: "gray.100",
+                    bg: "#3a3a3c",
+                    borderColor: "#007aff",
                   }}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {

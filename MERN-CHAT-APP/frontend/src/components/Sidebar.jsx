@@ -35,6 +35,7 @@ const getStoredUser = () => {
 };
 
 const Sidebar = ({ setSelectedGroup = () => {} }) => {
+  // Modal state controls administrator-only group creation.
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [newGroupName, setNewGroupName] = useState("");
   const [groups, setGroups] = useState([]);
@@ -47,13 +48,13 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  //Check if login user is an admin
+  // The backend remains the source of truth; this controls the admin-only UI.
   const checkAdminStatus = useCallback(() => {
     const userInfo = getStoredUser();
     setIsAdmin(Boolean(userInfo?.isAdmin));
   }, []);
 
-  //fetch all groups
+  // Load every group, then derive only the IDs this user has joined.
   const fetchGroups = useCallback(async () => {
     setIsLoadingGroups(true);
     try {
@@ -65,7 +66,7 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
         },
       });
       setGroups(data);
-      //get user groups
+      // Keep membership IDs separate so cards can render joined/unjoined states.
       const userGroupIds = data
         ?.filter((group) => {
           return group?.members?.some(
@@ -216,9 +217,9 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
   return (
     <Box
       h={{ base: "calc(100vh - 60px)", md: "100%" }}
-      bg="white"
+      bg="#151518"
       borderRight="1px"
-      borderColor="gray.200"
+      borderColor="#38383a"
       width={{ base: "100%", md: "300px" }}
       display="flex"
       flexDirection="column"
@@ -226,8 +227,8 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
       <Flex
         p={4}
         borderBottom="1px solid"
-        borderColor="gray.200"
-        bg="white"
+        borderColor="#38383a"
+        bg="#151518"
         position="sticky"
         top={0}
         zIndex={1}
@@ -237,7 +238,7 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
       >
         <Flex align="center">
           <Icon as={FiUsers} fontSize="24px" color="blue.500" mr={2} />
-          <Text fontSize="xl" fontWeight="bold" color="gray.800">
+          <Text fontSize="xl" fontWeight="bold" color="white">
             Groups
           </Text>
         </Flex>
@@ -259,12 +260,12 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
       <Box flex="1" overflowY="auto" p={4} mb={{ base: 20, md: 16 }}>
         <VStack spacing={3} align="stretch">
           {isLoadingGroups && (
-            <Text color="gray.500" textAlign="center" py={4}>
+            <Text color="gray.400" textAlign="center" py={4}>
               Loading groups...
             </Text>
           )}
           {!isLoadingGroups && groups.length === 0 && (
-            <Text color="gray.500" textAlign="center" py={4}>
+            <Text color="gray.400" textAlign="center" py={4}>
               No groups available yet.
             </Text>
           )}
@@ -275,16 +276,15 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
                 p={4}
                 cursor={userGroups.includes(group?._id) ? "pointer" : "default"}
                 borderRadius="lg"
-                bg={userGroups.includes(group?._id) ? "blue.50" : "gray.50"}
+                bg={userGroups.includes(group?._id) ? "#2c2c30" : "transparent"}
                 borderWidth="1px"
                 borderColor={
-                  userGroups.includes(group?._id) ? "blue.200" : "gray.200"
+                  userGroups.includes(group?._id) ? "#48484a" : "transparent"
                 }
-                transition="all 0.2s"
+                transition="background 0.2s, border-color 0.2s"
                 _hover={{
-                  transform: "translateY(-2px)",
-                  shadow: "md",
-                  borderColor: "blue.300",
+                  bg: "#2c2c30",
+                  borderColor: "#48484a",
                 }}
               >
                 <Flex justify="space-between" align="center">
@@ -295,7 +295,7 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
                     flex="1"
                   >
                     <Flex align="center" mb={2}>
-                      <Text fontWeight="bold" color="gray.800">
+                      <Text fontWeight="bold" color="white">
                         {group.name}
                       </Text>
                       {userGroups.includes(group?._id) && (
@@ -304,7 +304,7 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
                         </Badge>
                       )}
                     </Flex>
-                    <Text fontSize="sm" color="gray.600" noOfLines={2}>
+                    <Text fontSize="sm" color="gray.400" noOfLines={2}>
                       {group.description}
                     </Text>
                   </Box>
@@ -315,7 +315,7 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
                       userGroups?.includes(group?._id) ? "red" : "blue"
                     }
                     variant={
-                      userGroups?.includes(group?._id) ? "ghost" : "solid"
+                      userGroups?.includes(group?._id) ? "outline" : "solid"
                     }
                     ml={3}
                     onClick={() => {
@@ -325,7 +325,8 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
                     }}
                     _hover={{
                       transform: group.isJoined ? "scale(1.05)" : "none",
-                      bg: group.isJoined ? "red.50" : "blue.600",
+                      bg: group.isJoined ? "red.900" : "blue.600",
+                      color: "white",
                     }}
                     transition="all 0.2s"
                   >
@@ -346,8 +347,8 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
       <Box
         p={4}
         borderTop="1px solid"
-        borderColor="gray.200"
-        bg="gray.50"
+        borderColor="#38383a"
+        bg="#151518"
         position="fixed"
         bottom={0}
         left={0}

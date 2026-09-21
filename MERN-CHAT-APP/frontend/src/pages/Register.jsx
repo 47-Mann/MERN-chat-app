@@ -74,7 +74,7 @@ const Register = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bgGradient="linear(to-r, indigo.500, purple.500)"
+      bgGradient="linear(to-br, gray.950, blue.950)"
     >
       <Box
         display="flex"
@@ -119,7 +119,7 @@ const Register = () => {
         {/* Right Panel - Registration Form */}
         <Box
           w={["100%", "100%", "50%"]}
-          bg="white"
+          bg="#151518"
           p={[6, 8, 10]}
           display="flex"
           flexDirection="column"
@@ -127,7 +127,7 @@ const Register = () => {
         >
           {/* Mobile Header - Shown only on mobile */}
           <Box display={["block", "block", "none"]} textAlign="center" mb={6}>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+            <Text fontSize="2xl" fontWeight="bold" color="white">
               Create Account
             </Text>
           </Box>
@@ -141,7 +141,7 @@ const Register = () => {
             mx="auto"
           >
             <FormControl id="username" isRequired>
-              <FormLabel color="gray.700" fontWeight="medium">
+              <FormLabel color="gray.200" fontWeight="medium">
                 Username
               </FormLabel>
               <Input
@@ -149,8 +149,8 @@ const Register = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 size="lg"
-                bg="gray.50"
-                borderColor="gray.200"
+                bg="#2c2c30"
+                borderColor="#48484a"
                 _hover={{ borderColor: "indigo.500" }}
                 _focus={{ borderColor: "indigo.500" }}
                 placeholder="Choose a username"
@@ -158,7 +158,7 @@ const Register = () => {
             </FormControl>
 
             <FormControl id="email" isRequired>
-              <FormLabel color="gray.700" fontWeight="medium">
+              <FormLabel color="gray.200" fontWeight="medium">
                 Email
               </FormLabel>
               <Input
@@ -166,8 +166,8 @@ const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 size="lg"
-                bg="gray.50"
-                borderColor="gray.200"
+                bg="#2c2c30"
+                borderColor="#48484a"
                 _hover={{ borderColor: "indigo.500" }}
                 _focus={{ borderColor: "indigo.500" }}
                 placeholder="Enter your email"
@@ -175,7 +175,7 @@ const Register = () => {
             </FormControl>
 
             <FormControl id="password" isRequired>
-              <FormLabel color="gray.700" fontWeight="medium">
+              <FormLabel color="gray.200" fontWeight="medium">
                 Password
               </FormLabel>
               <Input
@@ -183,8 +183,8 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 size="lg"
-                bg="gray.50"
-                borderColor="gray.200"
+                bg="#2c2c30"
+                borderColor="#48484a"
                 _hover={{ borderColor: "indigo.500" }}
                 _focus={{ borderColor: "indigo.500" }}
                 placeholder="Create a password"
@@ -206,7 +206,7 @@ const Register = () => {
               Create Account
             </Button>
 
-            <Text color="gray.600" pt={4}>
+            <Text color="gray.400" pt={4}>
               Already have an account?{" "}
               <Link
                 to="/login"

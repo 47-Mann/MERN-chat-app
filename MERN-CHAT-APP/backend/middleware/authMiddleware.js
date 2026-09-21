@@ -28,6 +28,7 @@ const protect = async (req, res, next) => {
 };
 
 const requireAdmin = async (req, res, next) => {
+  // Group creation is protected server-side even if the client hides its button.
   try {
     if (req.user && req.user.isAdmin) {
       next();

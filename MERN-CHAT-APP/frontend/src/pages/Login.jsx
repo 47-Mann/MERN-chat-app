@@ -74,7 +74,7 @@ const Login = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bgGradient="linear(to-r, blue.600, purple.600)"
+      bgGradient="linear(to-br, gray.950, blue.950)"
     >
       <Box
         display="flex"
@@ -119,7 +119,7 @@ const Login = () => {
         {/* Right Panel - Login Form */}
         <Box
           w={["100%", "100%", "50%"]}
-          bg="white"
+          bg="#151518"
           p={[6, 8, 10]}
           display="flex"
           flexDirection="column"
@@ -133,7 +133,7 @@ const Login = () => {
               color="blue.600"
               mb={2}
             />
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+            <Text fontSize="2xl" fontWeight="bold" color="white">
               Welcome Back
             </Text>
           </Box>
@@ -147,7 +147,7 @@ const Login = () => {
             mx="auto"
           >
             <FormControl id="email" isRequired>
-              <FormLabel color="gray.700" fontWeight="medium">
+              <FormLabel color="gray.200" fontWeight="medium">
                 Email
               </FormLabel>
               <Input
@@ -156,25 +156,25 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 size="lg"
-                bg="gray.50"
-                borderColor="gray.200"
+                bg="#2c2c30"
+                borderColor="#48484a"
                 _hover={{ borderColor: "blue.500" }}
                 _focus={{ borderColor: "blue.500" }}
               />
             </FormControl>
 
             <FormControl id="password" isRequired>
-              <FormLabel color="gray.700" fontWeight="medium">
+              <FormLabel color="gray.200" fontWeight="medium">
                 Password
               </FormLabel>
               <Input
                 type="password"
                 placeholder="Enter your password"
                 size="lg"
-                bg="gray.50"
+                bg="#2c2c30"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                borderColor="gray.200"
+                borderColor="#48484a"
                 _hover={{ borderColor: "blue.500" }}
                 _focus={{ borderColor: "blue.500" }}
               />
@@ -192,7 +192,7 @@ const Login = () => {
               Sign In
             </Button>
 
-            <Text color="gray.600">
+            <Text color="gray.400">
               Don&apos;t have an account?{" "}
               <Link
                 to="/register"

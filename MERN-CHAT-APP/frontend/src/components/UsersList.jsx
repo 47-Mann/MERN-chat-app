@@ -19,8 +19,8 @@ const UsersList = ({ users, onlineUserIds }) => {
       h="100%"
       w="100%"
       borderLeft="1px solid"
-      borderColor="gray.200"
-      bg="white"
+      borderColor="#38383a"
+      bg="#151518"
       position="relative"
       overflow="hidden"
     >
@@ -28,8 +28,8 @@ const UsersList = ({ users, onlineUserIds }) => {
       <Flex
         p={5}
         borderBottom="1px solid"
-        borderColor="gray.200"
-        bg="white"
+        borderColor="#38383a"
+        bg="#151518"
         align="center"
         position="sticky"
         top={0}
@@ -37,7 +37,7 @@ const UsersList = ({ users, onlineUserIds }) => {
         boxShadow="sm"
       >
         <Icon as={FiUsers} fontSize="20px" color="blue.500" mr={2} />
-        <Text fontSize="lg" fontWeight="bold" color="gray.700">
+        <Text fontSize="lg" fontWeight="bold" color="white">
           Members
         </Text>
         <Badge
@@ -55,7 +55,7 @@ const UsersList = ({ users, onlineUserIds }) => {
       {/* Users List */}
       <Box flex="1" overflowY="auto" p={4}>
         {users.length === 0 ? (
-          <Text color="gray.500" textAlign="center" py={4}>
+          <Text color="gray.400" textAlign="center" py={4}>
             No members in this group.
           </Text>
         ) : (
@@ -71,9 +71,9 @@ const UsersList = ({ users, onlineUserIds }) => {
                   >
                     <Flex
                       p={3}
-                      bg="white"
-                      borderRadius="lg"
-                      shadow="sm"
+                      bg={isOnline ? "#2c2c30" : "#1c1c1e"}
+                      borderRadius="xl"
+                      shadow="none"
                       align="center"
                       borderWidth="1px"
                       borderColor="gray.100"
@@ -89,7 +89,7 @@ const UsersList = ({ users, onlineUserIds }) => {
                         <Text
                           fontSize="sm"
                           fontWeight="medium"
-                          color="gray.700"
+                          color="white"
                           noOfLines={1}
                         >
                           {getUserName(user)}
@@ -97,7 +97,7 @@ const UsersList = ({ users, onlineUserIds }) => {
                       </Box>
                       <Flex
                         align="center"
-                        bg={isOnline ? "green.50" : "gray.50"}
+                        bg={isOnline ? "green.50" : "gray.100"}
                         px={2}
                         py={1}
                         borderRadius="full"

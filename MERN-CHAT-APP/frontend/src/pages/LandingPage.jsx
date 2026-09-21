@@ -123,7 +123,7 @@ ChatMessage.propTypes = {
 
 export default function LandingPage() {
   return (
-    <Box bg={useColorModeValue("gray.50", "gray.900")} minH="100vh">
+    <Box bg="#0b0b0f" color="white" minH="100vh">
       {/* Hero Section */}
       <Container maxW="7xl" pt={10}>
         <Stack
@@ -159,7 +159,7 @@ export default function LandingPage() {
                 Chat App
               </Text>
             </Heading>
-            <Text color="gray.500" fontSize="xl">
+            <Text color="gray.300" fontSize="xl">
               Experience seamless group communication with our modern chat
               platform. Connect with teams, friends, and communities in
               real-time with advanced features like typing indicators and online
@@ -214,9 +214,9 @@ export default function LandingPage() {
               boxShadow="2xl"
               width="full"
               overflow="hidden"
-              bg="white"
+              bg="#151518"
               border="1px"
-              borderColor="gray.200"
+              borderColor="#38383a"
             >
               {/* Chat Header */}
               <Box
@@ -284,7 +284,7 @@ export default function LandingPage() {
         <Box py={20}>
           <VStack spacing={2} textAlign="center" mb={12}>
             <Heading fontSize="4xl">Powerful Features</Heading>
-            <Text fontSize="lg" color="gray.500">
+            <Text fontSize="lg" color="gray.300">
               Everything you need for seamless team collaboration
             </Text>
           </VStack>
@@ -339,13 +339,15 @@ export default function LandingPage() {
             spacing={10}
             align="center"
             justify="center"
-            bg={useColorModeValue("blue.50", "blue.900")}
+            bg="#151518"
+            border="1px solid"
+            borderColor="#38383a"
             p={10}
             rounded="xl"
           >
             <VStack align="flex-start" spacing={4}>
               <Heading size="lg">Ready to get started?</Heading>
-              <Text color="gray.600" fontSize="lg">
+              <Text color="gray.300" fontSize="lg">
                 Join thousands of users already using our platform
               </Text>
             </VStack>

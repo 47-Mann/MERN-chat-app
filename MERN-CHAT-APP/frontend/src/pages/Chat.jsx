@@ -8,7 +8,9 @@ import apiURL from "../../utils";
 const ENDPOINT = apiURL;
 
 const Chat = () => {
+  // The selected group is shared by the sidebar and chat area.
   const [selectedGroup, setSelectedGroup] = useState(null);
+  // Keep one authenticated Socket.IO connection for the chat screen.
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -30,12 +32,12 @@ const Chat = () => {
     };
   }, []);
   return (
-    <Flex h="100vh" direction={{ base: "column", md: "row" }}>
+    <Flex h="100vh" bg="#0b0b0f" direction={{ base: "column", md: "row" }}>
       <Box
         w={{ base: "100%", md: "300px" }}
         h={{ base: "auto", md: "100vh" }}
         borderRight="1px solid"
-        borderColor="gray.200"
+        borderColor="#38383a"
         display={{ base: selectedGroup ? "none" : "block", md: "block" }}
       >
         <Sidebar setSelectedGroup={setSelectedGroup} />
