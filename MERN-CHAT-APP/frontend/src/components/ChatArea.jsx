@@ -457,7 +457,12 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         flexShrink={0}
         display={{ base: "none", lg: "block" }}
       >
-        {selectedGroup && <UsersList users={connectedUsers} />}
+        {selectedGroup && (
+          <UsersList
+            users={selectedGroup.members || []}
+            onlineUserIds={connectedUsers.map((user) => user._id)}
+          />
+        )}
       </Box>
     </Flex>
   );
@@ -468,6 +473,13 @@ ChatArea.propTypes = {
     _id: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
+    members: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string,
+        userName: PropTypes.string,
+        username: PropTypes.string,
+      }),
+    ),
   }),
   socket: PropTypes.shape({
     emit: PropTypes.func.isRequired,

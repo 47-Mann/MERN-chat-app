@@ -13,7 +13,13 @@ const Chat = () => {
 
   useEffect(() => {
     // Pass the current session to Socket.IO when the chat screen mounts.
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") || {});
+    let userInfo = {};
+    try {
+      userInfo = JSON.parse(localStorage.getItem("userInfo") || "null") || {};
+    } catch {
+      localStorage.removeItem("userInfo");
+    }
+
     const newSocket = io(ENDPOINT, {
       auth: { token: userInfo.token },
     });

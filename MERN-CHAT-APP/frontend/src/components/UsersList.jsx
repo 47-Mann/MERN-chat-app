@@ -11,7 +11,7 @@ import {
 import { FiUsers, FiCircle } from "react-icons/fi";
 import PropTypes from "prop-types";
 
-const UsersList = ({ users }) => {
+const UsersList = ({ users, onlineUserIds }) => {
   const getUserName = (user) => user?.userName || user?.username || "User";
 
   return (
@@ -55,59 +55,67 @@ const UsersList = ({ users }) => {
       {/* Users List */}
       <Box flex="1" overflowY="auto" p={4}>
         <VStack align="stretch" spacing={3}>
-          {users.map((user) => (
-            <Box key={user._id}>
-              <Tooltip
-                label={`${getUserName(user)} is online`}
-                placement="left"
-              >
-                <Flex
-                  p={3}
-                  bg="white"
-                  borderRadius="lg"
-                  shadow="sm"
-                  align="center"
-                  borderWidth="1px"
-                  borderColor="gray.100"
+          {users.map((user) => {
+            const isOnline = onlineUserIds.includes(user._id);
+
+            return (
+              <Box key={user._id}>
+                <Tooltip
+                  label={`${getUserName(user)} is ${isOnline ? "online" : "offline"}`}
+                  placement="left"
                 >
-                  <Avatar
-                    size="sm"
-                    name={getUserName(user)}
-                    bg="blue.500"
-                    color="white"
-                    mr={3}
-                  />
-                  <Box flex="1">
-                    <Text
-                      fontSize="sm"
-                      fontWeight="medium"
-                      color="gray.700"
-                      noOfLines={1}
-                    >
-                      {getUserName(user)}
-                    </Text>
-                  </Box>
                   <Flex
+                    p={3}
+                    bg="white"
+                    borderRadius="lg"
+                    shadow="sm"
                     align="center"
-                    bg="green.50"
-                    px={2}
-                    py={1}
-                    borderRadius="full"
+                    borderWidth="1px"
+                    borderColor="gray.100"
                   >
-                    <Icon
-                      as={FiCircle}
-                      color="green.400"
-                      fontSize="8px"
-                      mr={1}
+                    <Avatar
+                      size="sm"
+                      name={getUserName(user)}
+                      bg="blue.500"
+                      color="white"
+                      mr={3}
                     />
-                    <Text fontSize="xs" color="green.600" fontWeight="medium">
-                      online
-                    </Text>
+                    <Box flex="1">
+                      <Text
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color="gray.700"
+                        noOfLines={1}
+                      >
+                        {getUserName(user)}
+                      </Text>
+                    </Box>
+                    <Flex
+                      align="center"
+                      bg={isOnline ? "green.50" : "gray.50"}
+                      px={2}
+                      py={1}
+                      borderRadius="full"
+                    >
+                      <Icon
+                        as={FiCircle}
+                        color={isOnline ? "green.400" : "gray.400"}
+                        fontSize="8px"
+                        mr={1}
+                      />
+                      <Text
+                        fontSize="xs"
+                        color={isOnline ? "green.600" : "gray.500"}
+                        fontWeight="medium"
+                      >
+                        {isOnline ? "online" : "offline"}
+                      </Text>
+                    </Flex>
                   </Flex>
-                </Flex>
-              </Tooltip>
-            </Box>
-          ))}
+                </Tooltip>
+              </Box>
+            );
+          })}
         </VStack>
       </Box>
     </Box>
@@ -122,6 +130,7 @@ UsersList.propTypes = {
       username: PropTypes.string,
     }),
   ).isRequired,
+  onlineUserIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default UsersList;

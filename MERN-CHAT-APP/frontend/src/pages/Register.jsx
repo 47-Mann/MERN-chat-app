@@ -132,7 +132,14 @@ const Register = () => {
             </Text>
           </Box>
 
-          <VStack spacing={5} w="100%" maxW="400px" mx="auto">
+          <VStack
+            as="form"
+            onSubmit={handleSubmit}
+            spacing={5}
+            w="100%"
+            maxW="400px"
+            mx="auto"
+          >
             <FormControl id="username" isRequired>
               <FormLabel color="gray.700" fontWeight="medium">
                 Username
@@ -185,7 +192,7 @@ const Register = () => {
             </FormControl>
 
             <Button
-              onClick={handleSubmit}
+              type="submit"
               isLoading={loading}
               colorScheme="purple"
               width="100%"

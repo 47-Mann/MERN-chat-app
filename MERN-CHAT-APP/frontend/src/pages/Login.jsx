@@ -25,13 +25,28 @@ const Login = () => {
   // Authenticate the user, persist the session, and open the protected chat route.
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!email.trim() || !password) {
+      toast({
+        title: "Missing information",
+        description: "Please enter your email and password.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      const { data } = await axios.post(`${apiURL}/api/users/login`, {
-        email,
-        password,
-      });
-      console.log(data.user);
+      const { data } = await axios.post(
+        `${apiURL}/api/users/login`,
+        {
+          email: email.trim(),
+          password,
+        },
+        { timeout: 15000 },
+      );
 
       // Keep the token and user details available to protected routes and API calls.
       localStorage.setItem("userInfo", JSON.stringify(data.user));
@@ -123,7 +138,14 @@ const Login = () => {
             </Text>
           </Box>
 
-          <VStack spacing={6} w="100%" maxW="400px" mx="auto">
+          <VStack
+            as="form"
+            onSubmit={handleSubmit}
+            spacing={6}
+            w="100%"
+            maxW="400px"
+            mx="auto"
+          >
             <FormControl id="email" isRequired>
               <FormLabel color="gray.700" fontWeight="medium">
                 Email
@@ -159,7 +181,7 @@ const Login = () => {
             </FormControl>
 
             <Button
-              onClick={handleSubmit}
+              type="submit"
               isLoading={loading}
               colorScheme="blue"
               width="100%"
