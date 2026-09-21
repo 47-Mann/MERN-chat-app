@@ -26,26 +26,46 @@ const Register = () => {
   // Create the account through the API; authentication happens during login.
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!username.trim() || !email.trim() || !password) {
+      toast({
+        title: "Missing information",
+        description: "Please complete all fields before creating an account.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      const { data } = await axios.post(`${apiURL}/api/users/register`, {
-        email,
-        password,
-        userName: username,
-      });
-      console.log(data.user);
+      await axios.post(
+        `${apiURL}/api/users/register`,
+        {
+          email: email.trim(),
+          password,
+          userName: username.trim(),
+        },
+        { timeout: 15000 },
+      );
 
       navigate("/login");
     } catch (error) {
       toast({
         title: "Error",
-        description: error.response.data.message || "An error occurred",
+        description:
+          error.response?.data?.message ||
+          (error.code === "ECONNABORTED"
+            ? "The server took too long to respond. Please try again."
+            : "Unable to reach the server. Please try again."),
         status: "error",
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
   return (
     <Box

@@ -37,17 +37,20 @@ const Login = () => {
       localStorage.setItem("userInfo", JSON.stringify(data.user));
       navigate("/chat");
     } catch (error) {
-      console.log(error);
-
       toast({
         title: "Error",
-        description: error.response.data.message || "An error occurred",
+        description:
+          error.response?.data?.message ||
+          (error.code === "ECONNABORTED"
+            ? "The server took too long to respond. Please try again."
+            : "Unable to reach the server. Please try again."),
         status: "error",
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
   return (
     <Box

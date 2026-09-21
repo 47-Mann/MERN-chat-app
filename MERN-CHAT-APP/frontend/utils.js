@@ -1,2 +1,2 @@
-const apiURL = "https://mern-chat-backend-0koj.onrender.com";
+const apiURL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 export default apiURL;

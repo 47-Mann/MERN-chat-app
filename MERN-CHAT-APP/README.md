@@ -47,6 +47,9 @@ JWT_SECRET=replace_with_a_long_random_secret
 
 The backend also accepts `MONGODB_URI` instead of `MONGO_URI`. If `PORT` is omitted, the backend uses port `5001`.
 
+The frontend uses `http://localhost:5001` by default during local development.
+For a deployed frontend, set `VITE_API_URL` to the deployed backend URL when building it.
+
 ## Installation
 
 Install backend dependencies from the project root:
