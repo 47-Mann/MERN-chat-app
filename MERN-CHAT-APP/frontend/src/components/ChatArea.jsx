@@ -33,25 +33,22 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
 
   // Read the current session once so message ownership and API calls use the same user.
   const currentUser = JSON.parse(localStorage.getItem("userInfo") || {});
+  const getUserName = (user) => user?.userName || user?.username || "User";
 
   useEffect(() => {
     if (selectedGroup && socket) {
       // Load history and subscribe to live events whenever the active group changes.
       fetchMessages();
-      socket.emit("join room", selectedGroup?._id);
-      socket.on("message receive", (newMessage) => {
+      socket.emit("joinRoom", selectedGroup?._id);
+      socket.on("messageReceived", (newMessage) => {
         setMessages((prev) => [...prev, newMessage]);
       });
 
-      socket.on("users in room", (users) => {
+      socket.on("usersInRoom", (users) => {
         setConnectedUsers(users);
       });
 
-      socket.on("user joined", (user) => {
-        setConnectedUsers((prev) => [...prev, user]);
-      });
-
-      socket.on("user left", (userId) => {
+      socket.on("userLeft", (userId) => {
         setConnectedUsers((prev) =>
           prev.filter((user) => user?._id !== userId),
         );
@@ -60,7 +57,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       socket.on("notification", (notification) => {
         toast({
           title:
-            notification?.type === "USER_JOINED" ? "New User" : "Notification",
+            notification?.type === "user_joined" ? "New User" : "Notification",
           description: notification.message,
           status: "info",
           duration: 3000,
@@ -69,27 +66,26 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         });
       });
 
-      socket.on("user typing", ({ username }) => {
-        setTypingUsers((prev) => new Set(prev).add(username));
+      socket.on("userTyping", (user) => {
+        setTypingUsers((prev) => new Set(prev).add(user));
       });
 
-      socket.on("user stop typing", ({ username }) => {
+      socket.on("userStoppedTyping", (user) => {
         setTypingUsers((prev) => {
           const newSet = new Set(prev);
-          newSet.delete(username);
+          newSet.delete(user);
           return newSet;
         });
       });
       // Leave the room and remove listeners before switching groups or unmounting.
       return () => {
-        socket.emit("leave room", selectedGroup?._id);
-        socket.off("message received");
-        socket.off("users in room");
-        socket.off("user joined");
-        socket.off("user left");
+        socket.emit("leaveRoom", selectedGroup?._id);
+        socket.off("messageReceived");
+        socket.off("usersInRoom");
+        socket.off("userLeft");
         socket.off("notification");
-        socket.off("user typing");
-        socket.off("user stop typing");
+        socket.off("userTyping");
+        socket.off("userStoppedTyping");
       };
     }
   }, [selectedGroup, socket, toast]);
@@ -127,7 +123,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      socket.emit("new message", {
+      socket.emit("newMessage", {
         ...data,
         groupId: selectedGroup?._id,
       });
@@ -148,10 +144,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
     setNewMessage(e.target.value);
     if (!isTyping && selectedGroup) {
       setIsTyping(true);
-      socket.emit("typing", {
-        groupId: selectedGroup?._id,
-        username: currentUser.username,
-      });
+      socket.emit("typing", selectedGroup?._id);
     }
     // Reset the timer on every keystroke so the indicator does not disappear early.
     if (typingTimeoutRef.current) {
@@ -160,9 +153,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
     // Emit the stop event once the user has stopped typing.
     typingTimeoutRef.current = setTimeout(() => {
       if (selectedGroup) {
-        socket.emit("stop typing", {
-          groupId: selectedGroup?._id,
-        });
+        socket.emit("stopTyping", selectedGroup?._id);
       }
       setIsTyping(false);
     }, 2000);
@@ -366,7 +357,10 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                     >
                       {message.sender._id === currentUser?._id ? (
                         <>
-                          <Avatar size="xs" name={message.sender.username} />
+                          <Avatar
+                            size="xs"
+                            name={getUserName(message.sender)}
+                          />
                           <Text fontSize="xs" color="gray.500">
                             You • {formatTime(message.createdAt)}
                           </Text>
@@ -374,10 +368,13 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                       ) : (
                         <>
                           <Text fontSize="xs" color="gray.500">
-                            {message.sender.username} •{" "}
+                            {getUserName(message.sender)} •{" "}
                             {formatTime(message.createdAt)}
                           </Text>
-                          <Avatar size="xs" name={message.sender.username} />
+                          <Avatar
+                            size="xs"
+                            name={getUserName(message.sender)}
+                          />
                         </>
                       )}
                     </Flex>

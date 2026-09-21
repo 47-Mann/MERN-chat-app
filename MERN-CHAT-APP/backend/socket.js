@@ -57,7 +57,7 @@ const socketIO = (io) => {
         io.in(groupId).emit("usersInRoom", usersInRoom);
 
         // Tell the remaining room members who left the group.
-        socket.to(groupId).emit("user_left", user._id);
+        socket.to(groupId).emit("userLeft", user._id);
       }
     });
 
@@ -70,13 +70,15 @@ const socketIO = (io) => {
     // A client sends typing while the user is composing a message.
     socket.on("typing", (groupId) => {
       // Only notify other members of the group; the sender already knows they are typing.
-      socket.to(groupId).emit("userTyping", user._id);
+      socket.to(groupId).emit("userTyping", user.userName ?? user.username);
     });
 
     // A client sends stopTyping when the user submits or clears the message.
     socket.on("stopTyping", (groupId) => {
       // Tell other members to remove the typing indicator for this user.
-      socket.to(groupId).emit("userStoppedTyping", user._id);
+      socket
+        .to(groupId)
+        .emit("userStoppedTyping", user.userName ?? user.username);
     });
 
     // Socket.IO fires disconnect when the client closes or loses its connection.
@@ -88,7 +90,7 @@ const socketIO = (io) => {
         const userData = connectedUsers.get(socket.id);
 
         // Notify the remaining members that this user is no longer connected.
-        socket.to(userData.room).emit("user_left", user._id);
+        socket.to(userData.room).emit("userLeft", user._id);
 
         connectedUsers.delete(socket.id);
 

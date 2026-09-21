@@ -61,11 +61,12 @@ const Sidebar = ({ setSelectedGroup }) => {
       const userGroupIds = data
         ?.filter((group) => {
           return group?.members?.some(
-            (member) => member?._id === userInfo?._id
+            (member) => member?._id === userInfo?._id,
           );
         })
         .map((group) => group?._id);
       setUserGroups(userGroupIds);
+      return data;
     } catch (error) {
       console.log(error);
     }
@@ -85,7 +86,7 @@ const Sidebar = ({ setSelectedGroup }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       toast({
         title: "Group Created",
@@ -124,10 +125,10 @@ const Sidebar = ({ setSelectedGroup }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      await fetchGroups();
-      setSelectedGroup(groups.find((g) => g?._id === groupId));
+      const updatedGroups = await fetchGroups();
+      setSelectedGroup(updatedGroups.find((group) => group?._id === groupId));
       toast({
         title: "Joined group successfully",
         status: "success",
@@ -150,15 +151,11 @@ const Sidebar = ({ setSelectedGroup }) => {
     try {
       const userInfo = JSON.parse(localStorage.getItem("userInfo") || {});
       const token = userInfo.token;
-      await axios.post(
-        `${apiURL}/api/groups/${groupId}/leave`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${apiURL}/api/groups/${groupId}/leave`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       await fetchGroups();
       setSelectedGroup(null);
       toast({

@@ -41,6 +41,8 @@ Create a `.env` file in the project root. Do not commit this file or share its v
 PORT=5001
 MONGO_URI=mongodb_connection_string
 JWT_SECRET=replace_with_a_long_random_secret
+# Comma-separated frontend origins, for example:
+# FRONTEND_URL=https://your-frontend.onrender.com
 ```
 
 The backend also accepts `MONGODB_URI` instead of `MONGO_URI`. If `PORT` is omitted, the backend uses port `5001`.
