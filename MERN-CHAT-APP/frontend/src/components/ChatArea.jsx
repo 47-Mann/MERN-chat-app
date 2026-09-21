@@ -87,7 +87,11 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       socket.on("notification", (notification) => {
         toast({
           title:
-            notification?.type === "user_joined" ? "New User" : "Notification",
+            notification?.type === "user_joined"
+              ? "New User"
+              : notification?.type === "user_left"
+                ? "User Left"
+                : "Notification",
           description: notification.message,
           status: "info",
           duration: 3000,

@@ -54,10 +54,17 @@ const socketIO = (io) => {
     socket.on("leaveRoom", (groupId) => {
       console.log(`${user.userName ?? "A user"} left room ${groupId}`);
 
-      // Remove the socket from the Socket.IO room before notifying its members.
-      socket.leave(groupId);
+      // Notify room members before removing this socket from the room.
+      socket.to(groupId).emit("userLeft", user._id);
+      socket.to(groupId).emit("notification", {
+        type: "user_left",
+        message: `${user.userName ?? "A user"} has left`,
+        user,
+      });
 
       if (connectedUsers.has(socket.id)) {
+        // Remove the socket from the room after the leave notification is sent.
+        socket.leave(groupId);
         // Remove the user's socket-to-room association from the presence map.
         connectedUsers.delete(socket.id);
 
@@ -67,9 +74,6 @@ const socketIO = (io) => {
 
         // Keep the remaining clients synchronized with the new presence list.
         io.in(groupId).emit("usersInRoom", usersInRoom);
-
-        // Tell the remaining room members who left the group.
-        socket.to(groupId).emit("userLeft", user._id);
       }
     });
 
@@ -103,6 +107,11 @@ const socketIO = (io) => {
 
         // Notify the remaining members that this user is no longer connected.
         socket.to(userData.room).emit("userLeft", user._id);
+        socket.to(userData.room).emit("notification", {
+          type: "user_left",
+          message: `${user.userName ?? "A user"} has disconnected`,
+          user,
+        });
 
         connectedUsers.delete(socket.id);
 
