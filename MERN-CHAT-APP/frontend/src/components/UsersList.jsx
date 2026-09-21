@@ -9,8 +9,11 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import { FiUsers, FiCircle } from "react-icons/fi";
+import PropTypes from "prop-types";
 
 const UsersList = ({ users }) => {
+  const getUserName = (user) => user?.userName || user?.username || "User";
+
   return (
     <Box
       h="100%"
@@ -54,7 +57,10 @@ const UsersList = ({ users }) => {
         <VStack align="stretch" spacing={3}>
           {users.map((user) => (
             <Box key={user._id}>
-              <Tooltip label={`${user.username} is online`} placement="left">
+              <Tooltip
+                label={`${getUserName(user)} is online`}
+                placement="left"
+              >
                 <Flex
                   p={3}
                   bg="white"
@@ -66,7 +72,7 @@ const UsersList = ({ users }) => {
                 >
                   <Avatar
                     size="sm"
-                    name={user.username}
+                    name={getUserName(user)}
                     bg="blue.500"
                     color="white"
                     mr={3}
@@ -78,7 +84,7 @@ const UsersList = ({ users }) => {
                       color="gray.700"
                       noOfLines={1}
                     >
-                      {user.username}
+                      {getUserName(user)}
                     </Text>
                   </Box>
                   <Flex
@@ -106,6 +112,16 @@ const UsersList = ({ users }) => {
       </Box>
     </Box>
   );
+};
+
+UsersList.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      userName: PropTypes.string,
+      username: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 export default UsersList;

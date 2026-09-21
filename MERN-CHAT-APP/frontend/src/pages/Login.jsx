@@ -168,7 +168,7 @@ const Login = () => {
             </Button>
 
             <Text color="gray.600">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 to="/register"
                 style={{

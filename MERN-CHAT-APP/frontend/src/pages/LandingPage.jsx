@@ -12,19 +12,17 @@ import {
   VStack,
   HStack,
   Badge,
-  Input,
 } from "@chakra-ui/react";
+import PropTypes from "prop-types";
 import { Link as RouterLink } from "react-router-dom";
 import {
   FiMessageSquare,
   FiUsers,
   FiLock,
   FiLogIn,
-  FiLogOut,
   FiUserPlus,
   FiGlobe,
   FiActivity,
-  FiCheckCircle,
   FiUserCheck,
 } from "react-icons/fi";
 
@@ -77,6 +75,18 @@ const Feature = ({ title, text, icon, badges = [] }) => {
   );
 };
 
+Feature.propTypes = {
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
+  badges: PropTypes.arrayOf(
+    PropTypes.shape({
+      color: PropTypes.string,
+      text: PropTypes.string,
+    }),
+  ),
+};
+
 const ChatMessage = ({ message, sender, time, isUser }) => {
   return (
     <Flex justify={isUser ? "flex-end" : "flex-start"} w="100%">
@@ -102,6 +112,13 @@ const ChatMessage = ({ message, sender, time, isUser }) => {
       </Box>
     </Flex>
   );
+};
+
+ChatMessage.propTypes = {
+  message: PropTypes.string.isRequired,
+  sender: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+  isUser: PropTypes.bool.isRequired,
 };
 
 export default function LandingPage() {

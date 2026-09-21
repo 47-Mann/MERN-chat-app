@@ -1,7 +1,6 @@
 import {
   Box,
   VStack,
-  HStack,
   Text,
   Input,
   Button,
@@ -14,14 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { FiSend, FiInfo, FiMessageCircle } from "react-icons/fi";
 import UsersList from "./UsersList";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import apiURL from "../../utils";
+import PropTypes from "prop-types";
 
 const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
-  console.log(selectedGroup?._id);
-
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [connectedUsers, setConnectedUsers] = useState([]);
@@ -35,10 +33,25 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
   const currentUser = JSON.parse(localStorage.getItem("userInfo") || {});
   const getUserName = (user) => user?.userName || user?.username || "User";
 
+  const fetchMessages = useCallback(
+    async (groupId) => {
+      const token = currentUser?.token;
+      try {
+        const { data } = await axios.get(`${apiURL}/api/messages/${groupId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setMessages(data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [currentUser?.token],
+  );
+
   useEffect(() => {
     if (selectedGroup && socket) {
       // Load history and subscribe to live events whenever the active group changes.
-      fetchMessages();
+      fetchMessages(selectedGroup._id);
       socket.emit("joinRoom", selectedGroup?._id);
       socket.on("messageReceived", (newMessage) => {
         setMessages((prev) => [...prev, newMessage]);
@@ -88,23 +101,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         socket.off("userStoppedTyping");
       };
     }
-  }, [selectedGroup, socket, toast]);
-  //fetch messages
-  const fetchMessages = async () => {
-    const currentUser = JSON.parse(localStorage.getItem("userInfo") || {});
-    const token = currentUser?.token;
-    try {
-      const { data } = await axios.get(
-        `${apiURL}/api/messages/${selectedGroup?._id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      setMessages(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }, [fetchMessages, selectedGroup, socket, toast]);
 
   // Persist the message first, then broadcast the saved record to other room members.
   const sendMessage = async () => {
@@ -130,7 +127,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
 
       setMessages([...messages, data]);
       setNewMessage("");
-    } catch (error) {
+    } catch {
       toast({
         title: "Error sending message",
         status: "error",
@@ -231,31 +228,6 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       </Box>
     ));
   };
-  // Sample data for demonstration
-  const sampleMessages = [
-    {
-      id: 1,
-      content: "Hey team! Just pushed the new updates to staging.",
-      sender: { username: "Sarah Chen" },
-      createdAt: "10:30 AM",
-      isCurrentUser: false,
-    },
-    {
-      id: 2,
-      content: "Great work! The new features look amazing 🚀",
-      sender: { username: "Alex Thompson" },
-      createdAt: "10:31 AM",
-      isCurrentUser: false,
-    },
-    {
-      id: 3,
-      content: "Thanks! Let's review it in our next standup.",
-      sender: { username: "You" },
-      createdAt: "10:32 AM",
-      isCurrentUser: true,
-    },
-  ];
-
   return (
     <Flex
       h="100%"
@@ -489,6 +461,20 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       </Box>
     </Flex>
   );
+};
+
+ChatArea.propTypes = {
+  selectedGroup: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    description: PropTypes.string,
+  }),
+  socket: PropTypes.shape({
+    emit: PropTypes.func.isRequired,
+    on: PropTypes.func.isRequired,
+    off: PropTypes.func.isRequired,
+  }).isRequired,
+  setSelectedGroup: PropTypes.func.isRequired,
 };
 
 export default ChatArea;

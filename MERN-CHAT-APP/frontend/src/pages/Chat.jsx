@@ -15,7 +15,7 @@ const Chat = () => {
     // Pass the current session to Socket.IO when the chat screen mounts.
     const userInfo = JSON.parse(localStorage.getItem("userInfo") || {});
     const newSocket = io(ENDPOINT, {
-      auth: { user: userInfo },
+      auth: { token: userInfo.token },
     });
     setSocket(newSocket);
     return () => {

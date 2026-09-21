@@ -1,11 +1,23 @@
+import jwt from "jsonwebtoken";
+import User from "./models/UserModel.js";
+
 // Register Socket.IO event handlers when the server is ready.
 const socketIO = (io) => {
   // Track each connected socket's authenticated user and current group.
   const connectedUsers = new Map();
 
   // Handle a new Socket.IO connection.
-  io.on("connection", (socket) => {
-    const user = socket.handshake.auth?.user;
+  io.on("connection", async (socket) => {
+    const token = socket.handshake.auth?.token;
+    let user;
+
+    // Authenticate the socket with the same signed token used by REST requests.
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      user = await User.findById(decoded.id).select("-password");
+    } catch {
+      user = null;
+    }
 
     // Do not allow an unauthenticated socket to join rooms or receive events.
     if (!user) {

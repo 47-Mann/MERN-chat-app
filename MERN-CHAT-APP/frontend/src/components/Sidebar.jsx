@@ -21,9 +21,10 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FiLogOut, FiPlus, FiUsers } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiURL from "../../utils";
+import PropTypes from "prop-types";
 
 const Sidebar = ({ setSelectedGroup }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -355,6 +356,10 @@ const Sidebar = ({ setSelectedGroup }) => {
       </Modal>
     </Box>
   );
+};
+
+Sidebar.propTypes = {
+  setSelectedGroup: PropTypes.func.isRequired,
 };
 
 export default Sidebar;
