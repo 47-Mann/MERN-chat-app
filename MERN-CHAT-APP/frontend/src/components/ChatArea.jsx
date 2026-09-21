@@ -30,8 +30,18 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
   const toast = useToast();
 
   // Read the current session once so message ownership and API calls use the same user.
-  const currentUser = JSON.parse(localStorage.getItem("userInfo") || {});
+  let currentUser = {};
+  try {
+    currentUser = JSON.parse(localStorage.getItem("userInfo") || "null") || {};
+  } catch {
+    localStorage.removeItem("userInfo");
+  }
   const getUserName = (user) => user?.userName || user?.username || "User";
+  const currentUserName = getUserName(currentUser);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, typingUsers]);
 
   const fetchMessages = useCallback(
     async (groupId) => {
@@ -42,10 +52,17 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         });
         setMessages(data);
       } catch (error) {
-        console.error(error);
+        toast({
+          title: "Unable to load messages",
+          description:
+            error?.response?.data?.message || "Please try again in a moment.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     },
-    [currentUser?.token],
+    [currentUser?.token, toast],
   );
 
   useEffect(() => {
@@ -93,6 +110,13 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       // Leave the room and remove listeners before switching groups or unmounting.
       return () => {
         socket.emit("leaveRoom", selectedGroup?._id);
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+          typingTimeoutRef.current = null;
+        }
+        setIsTyping(false);
+        setTypingUsers(new Set());
+        setConnectedUsers([]);
         socket.off("messageReceived");
         socket.off("usersInRoom");
         socket.off("userLeft");
@@ -113,7 +137,7 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
       const { data } = await axios.post(
         `${apiURL}/api/messages`,
         {
-          content: newMessage,
+          content: newMessage.trim(),
           groupId: selectedGroup?._id,
         },
         {
@@ -125,8 +149,16 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
         groupId: selectedGroup?._id,
       });
 
-      setMessages([...messages, data]);
+      setMessages((previousMessages) => [...previousMessages, data]);
       setNewMessage("");
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
+      if (selectedGroup) {
+        socket.emit("stopTyping", selectedGroup._id);
+      }
+      setIsTyping(false);
     } catch {
       toast({
         title: "Error sending message",
@@ -170,20 +202,18 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
     return typingUsersArray?.map((username) => (
       <Box
         key={username}
-        alignSelf={
-          username === currentUser?.username ? "flex-start" : "flex-end"
-        }
+        alignSelf={username === currentUserName ? "flex-start" : "flex-end"}
         maxW="70%"
       >
         <Flex
           align="center"
-          bg={username === currentUser?.username ? "blue.50" : "gray.50"}
+          bg={username === currentUserName ? "blue.50" : "gray.50"}
           p={2}
           borderRadius="lg"
           gap={2}
         >
           {/* current user (You) -left side */}
-          {username === currentUser?.username ? (
+          {username === currentUserName ? (
             <>
               <Avatar size="xs" name={username} />
               <Flex align="center" gap={1}>
@@ -272,7 +302,11 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                   {selectedGroup.name}
                 </Text>
                 <Text fontSize="sm" color="gray.500">
-                  {selectedGroup.description}
+                  {selectedGroup.description || "No description"}
+                </Text>
+                <Text fontSize="xs" color="gray.400">
+                  {selectedGroup.members?.length || 0} member
+                  {selectedGroup.members?.length === 1 ? "" : "s"}
                 </Text>
               </Box>
               <Icon
@@ -306,6 +340,11 @@ const ChatArea = ({ selectedGroup, socket, setSelectedGroup }) => {
                 },
               }}
             >
+              {messages.length === 0 && typingUsers.size === 0 && (
+                <Text color="gray.500" textAlign="center" py={8}>
+                  No messages yet. Start the conversation.
+                </Text>
+              )}
               {messages.map((message) => (
                 <Box
                   key={message._id}
