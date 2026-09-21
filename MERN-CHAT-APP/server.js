@@ -17,6 +17,10 @@ import socketIO from "./backend/socket.js";
 import dotenv from "dotenv";
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET must be configured in the backend environment");
+}
+
 const app = express();
 const server = http.createServer(app);
 // Configure one or more deployed frontend origins as a comma-separated value.
@@ -34,7 +38,6 @@ const allowedOrigins = [
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
-    methods: ["GET", "POST", "DELETE", "OPTIONS"],
     methods: ["GET", "POST", "DELETE", "OPTIONS"],
     credentials: true,
   },
