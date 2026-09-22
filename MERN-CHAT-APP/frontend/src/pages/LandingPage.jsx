@@ -139,8 +139,8 @@ export default function LandingPage() {
               px={3}
               py={1.5}
               borderRadius="full"
-              bg="#202c1a"
-              color="#d7ff64"
+              bg="blue.900"
+              color="blue.200"
               fontSize="xs"
               letterSpacing="0.08em"
               textTransform="uppercase"
@@ -155,7 +155,7 @@ export default function LandingPage() {
             >
               Make space
               <br />
-              <Text as="span" color="#d7ff64">
+              <Text as="span" color="blue.400">
                 for the good stuff.
               </Text>
             </Heading>
@@ -174,16 +174,16 @@ export default function LandingPage() {
                 to="/register"
                 size="lg"
                 px={7}
-                bg="#d7ff64"
-                color="#101112"
+                bg="blue.500"
+                color="white"
                 rightIcon={<FiArrowUpRight />}
-                _hover={{ bg: "#e2ff8b", transform: "translateY(-2px)" }}
+                _hover={{ bg: "blue.600", transform: "translateY(-2px)" }}
                 transition="all 0.2s ease"
               >
                 Create your space
               </Button>
               <HStack color="#8e959b" fontSize="sm" spacing={2}>
-                <Icon as={FiCheck} color="#d7ff64" />
+                <Icon as={FiCheck} color="blue.400" />
                 <Text>Free to get started</Text>
               </HStack>
             </HStack>
