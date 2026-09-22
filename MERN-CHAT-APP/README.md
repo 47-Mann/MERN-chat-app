@@ -122,7 +122,7 @@ npm run lint    # Run ESLint
 2. Log in to open the chat screen.
 3. Join an available group.
 4. Select a joined group to view its messages and members.
-5. Send messages and test the real-time typing indicator.
+5. Send messages and test the real-time typing indicator. Only group members can read or send messages.
 6. Leave a group or log out when finished.
 
 ## Administrator Workflow
@@ -166,7 +166,7 @@ The backend exposes these route groups:
 /api/messages
 ```
 
-Protected routes require a JWT returned by the user authentication endpoints.
+Protected routes require a JWT returned by the user authentication endpoints. Message history and message creation also require the authenticated user to belong to the requested group.
 
 ```text
 POST   /api/users/register
