@@ -152,7 +152,7 @@ export default function LandingPage() {
                   zIndex: -1,
                 }}
               >
-                MasynTech
+                MERN Chat App
               </Text>
               <br />
               <Text as="span" color="blue.400">
@@ -160,10 +160,8 @@ export default function LandingPage() {
               </Text>
             </Heading>
             <Text color="gray.300" fontSize="xl">
-              Experience seamless group communication with our modern chat
-              platform. Connect with teams, friends, and communities in
-              real-time with advanced features like typing indicators and online
-              status.
+              Connect with friends and family in real-time with our secure and
+              user-friendly chat application built with the MERN stack.
             </Text>
             <Stack
               spacing={{ base: 4, sm: 6 }}
@@ -253,26 +251,26 @@ export default function LandingPage() {
                 overflowY="auto"
               >
                 <ChatMessage
-                  sender="Sarah Chen"
+                  sender="Henry Smith"
                   message="Hey team! Just pushed the new updates to staging."
-                  time="10:30 AM"
+                  time="9:30 PM"
                   isUser={false}
                 />
                 <ChatMessage
-                  sender="Alex Thompson"
+                  sender="Joe Roberts"
                   message="Great work! The new features look amazing 🚀"
-                  time="10:31 AM"
+                  time="9:31 PM"
                   isUser={false}
                 />
                 <ChatMessage
                   sender="You"
                   message="Thanks! Let's review it in our next standup."
-                  time="10:32 AM"
+                  time="9:32 PM"
                   isUser={true}
                 />
                 <Box w="100%" textAlign="center">
                   <Badge colorScheme="gray" fontSize="xs">
-                    Sarah is typing...
+                    Henry is typing...
                   </Badge>
                 </Box>
               </VStack>
