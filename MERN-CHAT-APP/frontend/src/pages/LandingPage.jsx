@@ -19,10 +19,11 @@ import {
   FiMessageSquare,
   FiUsers,
   FiLock,
-  FiLogIn,
   FiUserPlus,
   FiGlobe,
   FiActivity,
+  FiArrowUpRight,
+  FiCheck,
   FiUserCheck,
 } from "react-icons/fi";
 
@@ -133,68 +134,59 @@ export default function LandingPage() {
           direction={{ base: "column", md: "row" }}
         >
           <Stack flex={1} spacing={{ base: 5, md: 10 }}>
-            <Heading
-              lineHeight={1.1}
-              fontWeight={600}
-              fontSize={{ base: "3xl", sm: "4xl", lg: "6xl" }}
+            <Badge
+              alignSelf="flex-start"
+              px={3}
+              py={1.5}
+              borderRadius="full"
+              bg="#202c1a"
+              color="#d7ff64"
+              fontSize="xs"
+              letterSpacing="0.08em"
+              textTransform="uppercase"
             >
-              <Text
-                as="span"
-                position="relative"
-                _after={{
-                  content: "''",
-                  width: "full",
-                  height: "30%",
-                  position: "absolute",
-                  bottom: 1,
-                  left: 0,
-                  bg: "blue.400",
-                  zIndex: -1,
-                }}
-              >
-                MERN Chat App
-              </Text>
+              <Icon as={FiActivity} mr={2} /> Live conversations
+            </Badge>
+            <Heading
+              fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
+              lineHeight="0.98"
+              letterSpacing="-0.055em"
+              fontWeight="700"
+            >
+              Make space
               <br />
-              <Text as="span" color="blue.400">
-                Chat App
+              <Text as="span" color="#d7ff64">
+                for the good stuff.
               </Text>
             </Heading>
-            <Text color="gray.300" fontSize="xl">
-              Connect with friends and family in real-time with our secure and
-              user-friendly chat application built with the MERN stack.
-            </Text>
-            <Stack
-              spacing={{ base: 4, sm: 6 }}
-              direction={{ base: "column", sm: "row" }}
+            <Text
+              color="#a5abb0"
+              fontSize={{ base: "lg", md: "xl" }}
+              maxW="500px"
+              lineHeight="1.65"
             >
+              A focused place for your people to talk, share ideas, and stay in
+              sync without the noise.
+            </Text>
+            <HStack spacing={4} pt={2} flexWrap="wrap">
               <Button
                 as={RouterLink}
                 to="/register"
-                rounded="full"
                 size="lg"
-                fontWeight="normal"
-                px={8}
-                colorScheme="blue"
-                bg="blue.400"
-                _hover={{ bg: "blue.500" }}
-                leftIcon={<FiUserPlus />}
+                px={7}
+                bg="#d7ff64"
+                color="#101112"
+                rightIcon={<FiArrowUpRight />}
+                _hover={{ bg: "#e2ff8b", transform: "translateY(-2px)" }}
+                transition="all 0.2s ease"
               >
-                Get Started
+                Create your space
               </Button>
-              <Button
-                as={RouterLink}
-                to="/login"
-                rounded="full"
-                size="lg"
-                fontWeight="normal"
-                px={8}
-                variant="outline"
-                colorScheme="blue"
-                leftIcon={<FiLogIn />}
-              >
-                Sign In
-              </Button>
-            </Stack>
+              <HStack color="#8e959b" fontSize="sm" spacing={2}>
+                <Icon as={FiCheck} color="#d7ff64" />
+                <Text>Free to get started</Text>
+              </HStack>
+            </HStack>
           </Stack>
 
           {/* Chat Preview */}
