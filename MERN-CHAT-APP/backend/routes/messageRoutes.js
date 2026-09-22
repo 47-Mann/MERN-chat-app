@@ -1,5 +1,6 @@
 import express from "express";
 import Message from "../models/ChatModel.js";
+import Group from "../models/GroupModel.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const messageRouter = express.Router();
@@ -8,6 +9,17 @@ const messageRouter = express.Router();
 messageRouter.post("/", protect, async (req, res) => {
   try {
     const { content, groupId } = req.body;
+
+    const group = await Group.findOne({
+      _id: groupId,
+      members: req.user._id,
+    }).select("_id");
+
+    if (!group) {
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this group" });
+    }
 
     // Store the authenticated user as the sender instead of trusting the request body.
     const message = await Message.create({
@@ -31,6 +43,17 @@ messageRouter.post("/", protect, async (req, res) => {
 // GET /api/messages/:groupId returns messages in conversation order.
 messageRouter.get("/:groupId", protect, async (req, res) => {
   try {
+    const group = await Group.findOne({
+      _id: req.params.groupId,
+      members: req.user._id,
+    }).select("_id");
+
+    if (!group) {
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this group" });
+    }
+
     // Filter by the group reference so messages from other groups are excluded.
     const messages = await Message.find({ group: req.params.groupId })
       .populate("sender", "userName email")
