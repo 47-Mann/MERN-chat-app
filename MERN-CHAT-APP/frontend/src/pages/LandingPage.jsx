@@ -223,7 +223,7 @@ export default function LandingPage() {
                 <HStack justify="space-between">
                   <HStack>
                     <Icon as={FiUsers} />
-                    <Text fontWeight="bold">Team MasynTech</Text>
+                    <Text fontWeight="bold">Team Chat</Text>
                   </HStack>
                   <HStack spacing={4}>
                     <Badge colorScheme="green" variant="solid">
@@ -250,13 +250,13 @@ export default function LandingPage() {
                 />
                 <ChatMessage
                   sender="Joe Roberts"
-                  message="Great work! The new features look amazing 🚀"
+                  message="Great! I'll review them and provide feedback."
                   time="9:31 PM"
                   isUser={false}
                 />
                 <ChatMessage
                   sender="You"
-                  message="Thanks! Let's review it in our next standup."
+                  message="Thanks, Henry! I'll check it out now."
                   time="9:32 PM"
                   isUser={true}
                 />
@@ -273,7 +273,7 @@ export default function LandingPage() {
         {/* Features Grid */}
         <Box py={20}>
           <VStack spacing={2} textAlign="center" mb={12}>
-            <Heading fontSize="4xl">Powerful Features</Heading>
+            <Heading fontSize="4xl">Features</Heading>
             <Text fontSize="lg" color="gray.300">
               Everything you need for seamless team collaboration
             </Text>
