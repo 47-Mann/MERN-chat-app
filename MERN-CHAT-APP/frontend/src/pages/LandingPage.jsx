@@ -6,7 +6,6 @@ import {
   Text,
   Stack,
   Icon,
-  useColorModeValue,
   SimpleGrid,
   Flex,
   VStack,
@@ -27,50 +26,61 @@ import {
   FiUserCheck,
 } from "react-icons/fi";
 
-const Feature = ({ title, text, icon, badges = [] }) => {
+const Feature = ({ title, text, icon, number, badges = [] }) => {
   return (
     <Stack
-      bg={useColorModeValue("white", "gray.800")}
-      rounded="xl"
-      p={6}
-      spacing={4}
+      bg="#151518"
+      borderRadius="8px"
+      p={{ base: 5, md: 6 }}
+      minH="235px"
+      justify="space-between"
+      spacing={6}
       border="1px solid"
-      borderColor={useColorModeValue("gray.100", "gray.700")}
+      borderColor="#38383a"
       _hover={{
         transform: "translateY(-5px)",
-        boxShadow: "xl",
+        borderColor: "blue.500",
+        boxShadow: "0 18px 40px rgba(0, 0, 0, 0.24)",
       }}
-      transition="all 0.3s ease"
+      transition="transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease"
     >
-      <Flex
-        w={16}
-        h={16}
-        align="center"
-        justify="center"
-        color="white"
-        rounded="full"
-        bg={useColorModeValue("blue.500", "blue.400")}
-      >
-        {icon}
-      </Flex>
+      <HStack justify="space-between" align="flex-start">
+        <Flex
+          w="44px"
+          h="44px"
+          align="center"
+          justify="center"
+          color="white"
+          borderRadius="6px"
+          bg="blue.600"
+        >
+          {icon}
+        </Flex>
+        <Text color="blue.300" fontSize="sm" fontWeight="700">
+          {number}
+        </Text>
+      </HStack>
       <Box>
-        <HStack spacing={2} mb={2}>
-          <Text fontWeight={600} fontSize="lg">
+        <HStack spacing={2} mb={3} flexWrap="wrap">
+          <Text fontWeight={700} fontSize="lg">
             {title}
           </Text>
           {badges.map((badge, index) => (
             <Badge
               key={index}
               colorScheme={badge.color}
-              variant="subtle"
+              variant="outline"
               rounded="full"
               px={2}
+              fontSize="10px"
             >
               {badge.text}
             </Badge>
           ))}
         </HStack>
-        <Text color={useColorModeValue("gray.500", "gray.200")}>{text}</Text>
+        <Text color="gray.400" lineHeight="1.7">
+          {text}
+        </Text>
       </Box>
     </Stack>
   );
@@ -80,6 +90,7 @@ Feature.propTypes = {
   title: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   icon: PropTypes.node.isRequired,
+  number: PropTypes.string.isRequired,
   badges: PropTypes.arrayOf(
     PropTypes.shape({
       color: PropTypes.string,
@@ -272,52 +283,73 @@ export default function LandingPage() {
 
         {/* Features Grid */}
         <Box py={20}>
-          <VStack spacing={2} textAlign="center" mb={12}>
-            <Heading fontSize="4xl">Features</Heading>
-            <Text fontSize="lg" color="gray.300">
-              Everything you need for seamless team collaboration
-            </Text>
-          </VStack>
-          <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 3 }}
-            spacing={10}
-            px={{ base: 4, md: 8 }}
+          <Flex
+            justify="space-between"
+            align={{ base: "flex-start", md: "flex-end" }}
+            direction={{ base: "column", md: "row" }}
+            gap={5}
+            mb={10}
           >
+            <Box>
+              <Text
+                color="blue.400"
+                fontSize="sm"
+                fontWeight="700"
+                letterSpacing="0.12em"
+                mb={3}
+              >
+                BUILT FOR BETTER CONVERSATIONS
+              </Text>
+              <Heading fontSize={{ base: "3xl", md: "4xl" }}>
+                Everything in the room.
+              </Heading>
+            </Box>
+            <Text color="gray.400" maxW="330px" lineHeight="1.7">
+              The tools you need to keep your people close and your work moving.
+            </Text>
+          </Flex>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
             <Feature
               icon={<Icon as={FiLock} w={10} h={10} />}
+              number="01"
               title="Secure Authentication"
-              badges={[{ text: "Secure", color: "green" }]}
-              text="Register and login securely with email verification and encrypted passwords."
+              badges={[{ text: "Protected", color: "blue" }]}
+              text="Protected sign-up and login keep each conversation available to the right people."
             />
             <Feature
               icon={<Icon as={FiUsers} w={10} h={10} />}
+              number="02"
               title="Group Management"
               badges={[{ text: "Real-time", color: "blue" }]}
-              text="Create, join, or leave groups easily. Manage multiple conversations in one place."
+              text="Create, join, or leave focused groups and keep every conversation in its own space."
             />
             <Feature
               icon={<Icon as={FiUserCheck} w={10} h={10} />}
+              number="03"
               title="Online Presence"
-              badges={[{ text: "Live", color: "green" }]}
-              text="See who's currently online and active in your groups in real-time."
+              badges={[{ text: "Live", color: "blue" }]}
+              text="See who is around and catch the rhythm of your group as it happens."
             />
             <Feature
               icon={<Icon as={FiActivity} w={10} h={10} />}
+              number="04"
               title="Typing Indicators"
-              badges={[{ text: "Interactive", color: "purple" }]}
-              text="Know when others are typing with real-time typing indicators."
+              badges={[{ text: "Interactive", color: "blue" }]}
+              text="Know when a reply is on its way with lightweight live typing updates."
             />
             <Feature
               icon={<Icon as={FiMessageSquare} w={10} h={10} />}
+              number="05"
               title="Instant Messaging"
-              badges={[{ text: "Fast", color: "orange" }]}
-              text="Send and receive messages instantly with real-time delivery and notifications."
+              badges={[{ text: "Fast", color: "blue" }]}
+              text="Send updates instantly with real-time delivery and clear message history."
             />
             <Feature
               icon={<Icon as={FiGlobe} w={10} h={10} />}
+              number="06"
               title="Global Access"
               badges={[{ text: "24/7", color: "blue" }]}
-              text="Access your chats from anywhere, anytime with persistent connections."
+              text="Stay connected across screens with a responsive experience built for anywhere."
             />
           </SimpleGrid>
         </Box>
