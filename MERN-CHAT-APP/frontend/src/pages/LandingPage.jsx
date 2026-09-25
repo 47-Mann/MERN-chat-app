@@ -316,37 +316,31 @@ export default function LandingPage() {
               badges={[{ text: "Protected", color: "blue" }]}
               text="Protected sign-up and login keep each conversation available to the right people."
             />
-            <Feature
-              icon={<Icon as={FiUsers} w={10} h={10} />}
-              number="02"
-              title="Group Management"
-              badges={[{ text: "Real-time", color: "blue" }]}
-              text="Create, join, or leave focused groups and keep every conversation in its own space."
-            />
+
             <Feature
               icon={<Icon as={FiUserCheck} w={10} h={10} />}
-              number="03"
+              number="02"
               title="Online Presence"
               badges={[{ text: "Live", color: "blue" }]}
               text="See who is around and catch the rhythm of your group as it happens."
             />
             <Feature
               icon={<Icon as={FiActivity} w={10} h={10} />}
-              number="04"
+              number="03"
               title="Typing Indicators"
               badges={[{ text: "Interactive", color: "blue" }]}
               text="Know when a reply is on its way with lightweight live typing updates."
             />
             <Feature
               icon={<Icon as={FiMessageSquare} w={10} h={10} />}
-              number="05"
+              number="04"
               title="Instant Messaging"
               badges={[{ text: "Fast", color: "blue" }]}
               text="Send updates instantly with real-time delivery and clear message history."
             />
             <Feature
               icon={<Icon as={FiGlobe} w={10} h={10} />}
-              number="06"
+              number="05"
               title="Global Access"
               badges={[{ text: "24/7", color: "blue" }]}
               text="Stay connected across screens with a responsive experience built for anywhere."
