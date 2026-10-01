@@ -59,8 +59,14 @@ userRouter.post("/guest", guestLoginLimiter, async (req, res) => {
         token: generateToken(user._id),
       },
     });
-  } catch {
-    return res.status(500).json({ message: "Unable to start a demo session" });
+  } catch (error) {
+    console.error("Guest session creation failed:", error);
+    return res.status(500).json({
+      message:
+        process.env.NODE_ENV === "production"
+          ? "Unable to start a demo session"
+          : error.message || "Unable to start a demo session",
+    });
   }
 });
 

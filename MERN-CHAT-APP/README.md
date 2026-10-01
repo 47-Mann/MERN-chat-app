@@ -41,7 +41,11 @@ MERN-CHAT-APP/
 
 ## Configuration
 
-Create a `.env` file in the project root. Do not commit this file or share its values.
+Create a `.env` file in the project root from the supplied template. The default MongoDB URI is for a local MongoDB service; replace it with your MongoDB Atlas connection string if you use Atlas. Do not commit `.env` or share its values.
+
+```bash
+cp .env.example .env
+```
 
 ```env
 PORT=5001
@@ -52,7 +56,7 @@ FRONTEND_URL=http://localhost:5173
 
 The backend also accepts `MONGODB_URI` instead of `MONGO_URI`. If `PORT` is omitted, the backend uses port `5001`.
 
-The frontend uses `http://localhost:5001` by default during local development. For a deployed frontend, set `VITE_API_URL` to the deployed backend URL when building it. `FRONTEND_URL` supports comma-separated origins when more than one frontend origin is needed.
+The frontend uses `http://localhost:5001` by default during local development. Guest access requires MongoDB to be running and reachable by the backend. For a deployed frontend, set `VITE_API_URL` to the deployed backend URL when building it. `FRONTEND_URL` supports comma-separated origins when more than one frontend origin is needed.
 
 Generate a JWT secret with:
 

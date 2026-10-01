@@ -159,7 +159,7 @@ export default function LandingPage() {
           error.response?.data?.message ||
           (error.code === "ECONNABORTED"
             ? "The server took too long to respond. Please try again."
-            : "Unable to start a demo session. Please try again."),
+            : "Cannot reach the chat service. Start the backend and check its MongoDB connection."),
         status: "error",
         duration: 5000,
         isClosable: true,
