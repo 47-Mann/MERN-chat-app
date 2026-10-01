@@ -118,12 +118,11 @@ npm run lint    # Run ESLint
 
 ## Using the Application
 
-1. Register a user account.
-2. Log in to open the chat screen.
-3. Join an available group.
-4. Select a joined group to view its messages and members.
-5. Send messages and test the real-time typing indicator. Only group members can read or send messages.
-6. Leave a group or log out when finished.
+1. Register a user account and log in, or choose **Explore as guest** on the landing page.
+2. Join an available group. An administrator must create at least one group before guests can participate.
+3. Select a joined group to view its messages and members.
+4. Send messages and test the real-time typing indicator. Only group members can read or send messages.
+5. Leave a group or log out when finished. Guest accounts expire automatically after 24 hours.
 
 ## Administrator Workflow
 

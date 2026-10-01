@@ -13,7 +13,11 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import apiURL from "../../utils";
+import { useToast } from "@chakra-ui/react";
 import {
   FiMessageSquare,
   FiUsers,
@@ -134,6 +138,37 @@ ChatMessage.propTypes = {
 };
 
 export default function LandingPage() {
+  const [isStartingDemo, setIsStartingDemo] = useState(false);
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const handleGuestLogin = async () => {
+    setIsStartingDemo(true);
+    try {
+      const { data } = await axios.post(
+        `${apiURL}/api/users/guest`,
+        {},
+        { timeout: 15000 },
+      );
+      localStorage.setItem("userInfo", JSON.stringify(data.user));
+      navigate("/chat");
+    } catch (error) {
+      toast({
+        title: "Demo unavailable",
+        description:
+          error.response?.data?.message ||
+          (error.code === "ECONNABORTED"
+            ? "The server took too long to respond. Please try again."
+            : "Unable to start a demo session. Please try again."),
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsStartingDemo(false);
+    }
+  };
+
   return (
     <Box bg="#0b0b0f" color="white" minH="100vh">
       {/* Hero Section */}
@@ -192,6 +227,20 @@ export default function LandingPage() {
                 transition="all 0.2s ease"
               >
                 Create your space
+              </Button>
+              <Button
+                onClick={handleGuestLogin}
+                isLoading={isStartingDemo}
+                loadingText="Starting demo"
+                size="lg"
+                px={6}
+                variant="outline"
+                borderColor="#555a62"
+                color="white"
+                leftIcon={!isStartingDemo && <FiUserCheck />}
+                _hover={{ bg: "whiteAlpha.100", borderColor: "gray.300" }}
+              >
+                Explore as guest
               </Button>
               <HStack color="#8e959b" fontSize="sm" spacing={2}>
                 <Icon as={FiCheck} color="blue.400" />

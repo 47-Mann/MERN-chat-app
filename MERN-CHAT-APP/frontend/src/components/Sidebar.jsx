@@ -148,8 +148,9 @@ const Sidebar = ({ setSelectedGroup = () => {} }) => {
   };
   //logout
   const handleLogout = () => {
+    const isGuest = getStoredUser().isGuest;
     localStorage.removeItem("userInfo");
-    navigate("/login");
+    navigate(isGuest ? "/" : "/login");
   };
   //join group
   const handleJoinGroup = async (groupId) => {

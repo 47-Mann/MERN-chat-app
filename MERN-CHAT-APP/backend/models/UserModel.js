@@ -27,10 +27,22 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isGuest: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     // Automatically add `createdAt` and `updatedAt` timestamps
     timestamps: true,
+  },
+);
+
+userSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: 24 * 60 * 60,
+    partialFilterExpression: { isGuest: true },
   },
 );
 

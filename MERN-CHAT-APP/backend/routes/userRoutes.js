@@ -1,8 +1,18 @@
 import express from "express";
+import mongoose from "mongoose";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
+import { randomBytes, randomInt, randomUUID } from "node:crypto";
+import { rateLimit } from "express-rate-limit";
 
 const userRouter = express.Router();
+const guestLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many demo sessions. Please try again later." },
+});
 
 // User routes
 //
@@ -22,6 +32,38 @@ const userRouter = express.Router();
 // POST /register
 // Create a new user account. Checks whether the email already exists, and
 // if not, creates the user document in MongoDB and returns basic user info.
+userRouter.post("/guest", guestLoginLimiter, async (req, res) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      message:
+        "Demo sign-in needs a reachable database. Please try again when the server is connected.",
+    });
+  }
+
+  try {
+    const userName = `Guest ${randomInt(1000, 10000)}`;
+    const user = await User.create({
+      userName,
+      email: `guest-${randomUUID()}@demo.invalid`,
+      password: randomBytes(32).toString("hex"),
+      isGuest: true,
+    });
+
+    return res.status(201).json({
+      user: {
+        _id: user._id,
+        username: user.userName,
+        email: user.email,
+        isAdmin: false,
+        isGuest: true,
+        token: generateToken(user._id),
+      },
+    });
+  } catch {
+    return res.status(500).json({ message: "Unable to start a demo session" });
+  }
+});
+
 userRouter.post("/register", async (req, res) => {
   try {
     // Read the incoming data from the request body.
@@ -70,6 +112,7 @@ userRouter.post("/login", async (req, res) => {
           username: user.userName,
           email: user.email,
           isAdmin: user.isAdmin,
+          isGuest: user.isGuest,
           token: generateToken(user._id),
         },
       });
