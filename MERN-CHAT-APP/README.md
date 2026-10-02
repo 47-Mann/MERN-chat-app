@@ -1,23 +1,36 @@
-# MERN Chat Application
+# MERN Chat App
 
-A real-time group chat application built with MongoDB, Express, React, Node.js, and Socket.IO. Users can create accounts, join groups, exchange messages in real time, see member presence, and receive typing indicators.
+A real-time group chat application built with MongoDB, Express, React, Node.js, and Socket.IO. The app supports user authentication, guest access, group membership, and live messaging for multiple users.
+
+## Tech Stack
+
+- Frontend: React + Vite + Chakra UI
+- Backend: Node.js + Express
+- Database: MongoDB + Mongoose
+- Real-time communication: Socket.IO
+- Authentication: JWT + bcrypt
 
 ## Features
 
-- User registration and JWT authentication
-- Protected user, group, and message routes
-- Admin-only group creation
-- Group join and leave workflows
-- Group chat with Socket.IO real-time messages
-- Online and offline member presence
-- Typing indicators and message timestamps
-- Responsive Chakra UI interface
-- MongoDB persistence for users, groups, and messages
+- User registration and login
+- Guest demo access
+- JWT-protected API routes
+- Group creation and membership management
+- Real-time messaging within groups
+- Online status updates
+- Typing indicators
+- Admin-only group creation flow
+- Responsive dark-themed UI
 
 ## Project Structure
 
 ```text
 MERN-CHAT-APP/
+├── .env.example
+├── .env
+├── README.md
+├── package.json
+├── server.js
 ├── backend/
 │   ├── middleware/
 │   ├── models/
@@ -26,49 +39,54 @@ MERN-CHAT-APP/
 ├── docs/
 ├── frontend/
 │   ├── public/
-│   └── src/
-│       ├── components/
-│       └── pages/
-├── server.js
-├── package.json
-└── README.md
+│   ├── src/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   └── tailwind.config.js
+└── node_modules/
 ```
 
 ## Prerequisites
 
-- Node.js and npm
-- A MongoDB database, local or hosted through MongoDB Atlas
+Before running the app, make sure you have:
 
-## Configuration
+- Node.js 18+ installed
+- npm installed
+- MongoDB running locally or a MongoDB Atlas connection string
 
-Create a `.env` file in the project root from the supplied template. The default MongoDB URI is for a local MongoDB service; replace it with your MongoDB Atlas connection string if you use Atlas. Do not commit `.env` or share its values.
+## Environment Setup
+
+Copy the example environment file and update the values:
 
 ```bash
 cp .env.example .env
 ```
 
+Example configuration:
+
 ```env
 PORT=5001
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_long_random_secret
+MONGO_URI=mongodb://127.0.0.1:27017/mern-chat-app
+JWT_SECRET=replace-with-a-long-random-secret
 FRONTEND_URL=http://localhost:5173
 ```
 
-The backend also accepts `MONGODB_URI` instead of `MONGO_URI`. If `PORT` is omitted, the backend uses port `5001`.
+Notes:
 
-The frontend uses `http://localhost:5001` by default during local development. Guest access requires MongoDB to be running and reachable by the backend. For a deployed frontend, set `VITE_API_URL` to the deployed backend URL when building it. `FRONTEND_URL` supports comma-separated origins when more than one frontend origin is needed.
-
-Generate a JWT secret with:
+- The backend also accepts `MONGODB_URI` if you prefer that variable name.
+- `FRONTEND_URL` supports comma-separated origins for multiple frontend domains.
+- `JWT_SECRET` should be a long random string. You can generate one with:
 
 ```bash
 openssl rand -base64 48
 ```
 
-Never commit `.env` or expose `JWT_SECRET`, `MONGO_URI`, or other backend secrets in frontend code.
+Do not commit your `.env` file to version control.
 
 ## Installation
 
-Install backend dependencies from the project root:
+Install root dependencies:
 
 ```bash
 npm install
@@ -82,67 +100,100 @@ npm install
 cd ..
 ```
 
-## Running Locally
+## Run the App
 
-Start the backend in one terminal from the project root:
+Start the backend from the project root:
 
 ```bash
 npm start
 ```
 
-Start the frontend in a second terminal:
+Start the frontend in a separate terminal:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-Vite usually serves the frontend at `http://localhost:5173`. The backend usually runs at `http://localhost:5001`.
+Open the app in your browser at:
 
-Open `http://localhost:5173` in a browser. Make sure MongoDB is running locally or that `MONGO_URI` points to a reachable MongoDB Atlas database.
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5001
 
-## Available Commands
+Make sure MongoDB is running before starting the server.
+
+## Root Scripts
 
 From the project root:
 
 ```bash
-npm start       # Start the backend
-npm run dev     # Start the Vite frontend through the root script
-npm test        # Run frontend lint, frontend build, and backend syntax checks
+npm start   # Start the Express API server
+npm run dev # Start the Vite frontend
+npm test    # Run frontend lint, frontend build, and backend syntax checks
 ```
 
-From the `frontend/` directory:
+## Frontend Scripts
+
+Inside the `frontend` folder:
 
 ```bash
-npm run dev     # Start the Vite development server
-npm run build   # Create a production build
-npm run preview # Preview the production build locally
+npm run dev     # Start the Vite dev server
+npm run build   # Produce a production build
+npm run preview # Preview the production build
 npm run lint    # Run ESLint
 ```
 
-## Using the Application
+## How the App Works
 
-1. Register a user account and log in, or choose **Explore as guest** on the landing page.
-2. Join an available group. An administrator must create at least one group before guests can participate.
-3. Select a joined group to view its messages and members.
-4. Send messages and test the real-time typing indicator. Only group members can read or send messages.
-5. Leave a group or log out when finished. Guest accounts expire automatically after 24 hours.
+1. Register an account or use the guest login flow.
+2. Join an existing group or create one if you are an admin.
+3. Select a group to view messages and members.
+4. Send messages in real time; other members receive updates instantly.
+5. Leave a group or log out when finished.
 
-## Administrator Workflow
+## Admin Workflow
 
-New accounts are regular members by default. To create the first administrator, register an account and set its `isAdmin` field to `true` in MongoDB:
+New accounts are regular members by default. To make the first admin account:
 
 ```js
 db.users.updateOne({ email: "admin@example.com" }, { $set: { isAdmin: true } });
 ```
 
-Log out and log back in after changing the role. Administrators can then:
+Then log out and back in. Admin users can create groups from the UI.
 
-- Create groups with the `+` button.
+## API Overview
 
-## Deployment
+The backend exposes the following route groups:
 
-Deploy the backend and frontend as separate services. Configure these variables in the backend hosting environment:
+```text
+/api/users
+/api/groups
+/api/messages
+```
+
+Common routes:
+
+```text
+POST /api/users/register
+POST /api/users/login
+POST /api/users/guest
+
+GET  /api/groups
+POST /api/groups
+POST /api/groups/:groupId/join
+DELETE /api/groups/:groupId/leave
+
+GET  /api/messages/:groupId
+POST /api/messages
+```
+
+Protected routes require a valid JWT from the auth flow.
+
+## Deployment Notes
+
+For production, deploy the backend and frontend as separate services and set the environment variables in each environment:
+
+Backend:
 
 ```env
 PORT=5001
@@ -151,39 +202,14 @@ JWT_SECRET=your_production_jwt_secret
 FRONTEND_URL=https://your-frontend-domain.com
 ```
 
-Configure this variable in the frontend build environment:
+Frontend:
 
 ```env
 VITE_API_URL=https://your-backend-domain.com
 ```
 
-Use a dedicated production database and unique secrets. Do not publish demo admin credentials unless the account is intentionally disposable.
-
-## API Routes
-
-The backend exposes these route groups:
-
-```text
-/api/users
-/api/groups
-/api/messages
-```
-
-Protected routes require a JWT returned by the user authentication endpoints. Message history and message creation also require the authenticated user to belong to the requested group.
-
-```text
-POST   /api/users/register
-POST   /api/users/login
-
-GET    /api/groups
-POST   /api/groups
-POST   /api/groups/:groupId/join
-DELETE /api/groups/:groupId/leave
-
-GET    /api/messages/:groupId
-POST   /api/messages
-```
+Use strong secrets and a production MongoDB instance for deployment.
 
 ## License
 
-See the `LICENSE` file for licensing terms.
+This project is licensed under the ISC license.
